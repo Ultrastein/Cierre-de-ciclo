@@ -34,3 +34,19 @@
 .lst li{font-size:14px;padding:4px 10px;border-radius:10px;background:rgba(128,128,128,.18)}
 .cv-foot{text-align:center;padding:12px;font-size:13px;color:var(--m);border-top:1px solid rgba(128,128,128,.25)}
 .ref{background:rgba(128,128,128,.15);border-radius:12px;padding:12px;font-style:italic;color:var(--m)}
+
+/* rediseño 2026 */
+.cv{--a:#FF5C7A;--b:#FFC93C;--bgc:#14142B;--panel:#1E1E3F;--m:#C9C9E6;border-radius:26px}
+.cv-head{background:linear-gradient(120deg,#FF5C7A 0%,#7B3FE4 100%);padding:40px 48px}
+.cv-photo{width:150px;height:150px;border-width:6px}
+.cv-name{font-size:44px}
+.cv-role{background:rgba(20,20,43,.45)}
+.tag{border-radius:999px;background:#272752;padding:6px 13px}
+.skill .tr{background:#34346B}
+.exp{background:#1E1E3F;border-radius:18px;padding:16px 18px}
+.lst li{border-radius:10px;background:#272752}
+.cv.t-clasico{--a:#0f3460;--b:#e94560;--bgc:#ffffff;--panel:#eef2fb;--t:#1a1a2e;--m:#4a5470}
+.cv.t-neon{--a:#00f5d4;--b:#f15bb5;--bgc:#10002b;--panel:#240046;--t:#fff;--m:#cdb4db}
+.cv.t-selva{--a:#2ecc71;--b:#ffd700;--bgc:#0b2b1f;--panel:#14402e;--t:#fff;--m:#bfe3cf}
+.cv.t-clasico .exp{background:#fff}
+.cv.t-clasico .lst li,.cv.t-clasico .tag{background:#dfe6f6}

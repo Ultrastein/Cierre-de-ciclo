@@ -154,6 +154,55 @@ textarea{min-height:90px;resize:vertical}
 .cam-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .flash{animation:flash .4s}
 @keyframes flash{from{background:#fff}to{background:#000}}
+/* ===== REDISEÑO 2026 (paleta índigo + coral + dorado) ===== */
+:root{--bg:#14142B;--card:#1E1E3F;--blue:#34346B;--red:#FF5C7A;--gold:#FFC93C;--txt:#F5F5FF;--muted:#B9B9DE;--ok:#3DDC97;
+  --c-alf:#4CC9F0;--c-ciu:#3DDC97;--c-pyr:#FF5C7A;--c-mak:#FFC93C;--c-ia:#B388FF;--c-pro:#FF9F43}
+body{background-image:radial-gradient(circle at 12% 0%,rgba(255,92,122,.22),transparent 38%),radial-gradient(circle at 92% 30%,rgba(76,201,240,.16),transparent 36%)}
+header h1{text-shadow:3px 3px 0 var(--red)}
+.panel{border:2px solid var(--blue);border-radius:28px;padding:36px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+h2{font-size:34px;font-weight:700}
+.steps{gap:12px}
+.step-pill{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 10px;border-radius:16px;font-size:16px;background:var(--card);color:var(--muted)}
+.step-pill.active{background:#272752;border-color:var(--gold);color:var(--txt)}
+.step-pill.done{background:var(--card);color:var(--txt)}
+.step-pill .num{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;background:var(--blue);color:var(--txt);flex-shrink:0}
+.step-pill.active .num{background:var(--gold);color:var(--bg)}
+.step-pill.done .num{background:var(--ok);color:var(--bg)}
+.bar>div{background:linear-gradient(90deg,var(--red),var(--gold))}
+input[type=text],textarea,select{background:var(--bg);border-radius:14px}
+.btn{border-radius:16px;padding:15px 28px;transition:transform .1s,box-shadow .1s}
+.btn-main{background:var(--red);color:var(--bg);box-shadow:0 5px 0 #B8324D}
+.btn-gold{background:var(--gold);color:var(--bg);box-shadow:0 5px 0 #B38A12}
+.btn-ghost{border-color:var(--blue);box-shadow:none}
+.btn-main:active,.btn-gold:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.4)}
+.grade-btn{background:var(--bg);border-radius:20px}
+.grade-btn.sel{background:#272752;box-shadow:0 0 0 4px rgba(255,201,60,.18)}
+.chip{background:var(--bg)}
+.chip.sel{background:var(--red);border-color:var(--red);color:var(--bg);font-weight:600}
+.counter{background:#272752;border-radius:18px;padding:14px 20px}
+.tab{border-radius:999px;background:var(--bg);padding:10px 18px}
+.tab.active{background:#272752}
+.ccard{background:var(--bg);border-radius:22px;padding:20px;min-height:190px}
+.ccard h4{font-size:20px}
+.ccard .em{width:52px;height:52px;border-radius:16px;background:var(--card);border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:6px}
+.ccard.sel{box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 22%,transparent)}
+.proof{background:var(--bg);border-left-color:var(--gold);border-radius:18px}
+.challenge{border-radius:22px}
+.send-box{border-radius:20px;background:linear-gradient(135deg,rgba(61,220,151,.16),rgba(76,201,240,.12))}
+.cv{--a:#FF5C7A;--b:#FFC93C;--bgc:#14142B;--panel:#1E1E3F;--m:#C9C9E6;border-radius:26px}
+.cv-head{background:linear-gradient(120deg,#FF5C7A 0%,#7B3FE4 100%);padding:40px 48px}
+.cv-photo{width:150px;height:150px;border-width:6px}
+.cv-name{font-size:44px}
+.cv-role{background:rgba(20,20,43,.45)}
+.cv h3{font-size:14px}
+.tag{border-radius:999px;background:#272752;padding:6px 13px}
+.skill .tr{background:#34346B}
+.exp{background:#1E1E3F;border-radius:18px;padding:16px 18px}
+.cv.t-clasico .exp{background:#fff}
+.lst li{border-radius:10px;background:#272752}
+.cv.t-clasico .lst li,.cv.t-clasico .tag{background:#dfe6f6}
+.badge b{border-radius:50%}
+@media(max-width:720px){.panel{padding:22px}.step-pill .num{display:none}h2{font-size:26px}}
 @media print{
   body{background:none}
   .no-print,header,.steps,.bar,.nav,.cv-tools{display:none!important}
@@ -408,7 +457,7 @@ function load(){try{const d=JSON.parse(localStorage.getItem('cvtech2026'));if(d)
 /* ===== STEPS ===== */
 const STEPN=['¿Quién sos?','Lo que te gusta','Lo que aprendiste','Tu CV'];
 function renderSteps(){
-  $('steps').innerHTML=STEPN.map((n,i)=>`<div class="step-pill ${i+1===step?'active':''} ${i+1<step?'done':''}" onclick="jump(${i+1})">${i+1}. ${n}</div>`).join('');
+  $('steps').innerHTML=STEPN.map((n,i)=>`<div class="step-pill ${i+1===step?'active':''} ${i+1<step?'done':''}" onclick="jump(${i+1})"><span class="num">${i+1<step?'✓':i+1}</span>${n}</div>`).join('');
   $('barFill').style.width=(step*25)+'%';
 }
 function jump(n){ if(n<step) go(n); else go(n); }
