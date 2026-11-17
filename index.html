@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Armá tu CV Tech 2026 · Bereshit</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#1a1a2e; --card:#16213e; --blue:#0f3460; --red:#e94560; --gold:#ffd700;
@@ -154,55 +154,92 @@ textarea{min-height:90px;resize:vertical}
 .cam-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .flash{animation:flash .4s}
 @keyframes flash{from{background:#fff}to{background:#000}}
-/* ===== REDISEÑO 2026 (paleta índigo + coral + dorado) ===== */
-:root{--bg:#14142B;--card:#1E1E3F;--blue:#34346B;--red:#FF5C7A;--gold:#FFC93C;--txt:#F5F5FF;--muted:#B9B9DE;--ok:#3DDC97;
-  --c-alf:#4CC9F0;--c-ciu:#3DDC97;--c-pyr:#FF5C7A;--c-mak:#FFC93C;--c-ia:#B388FF;--c-pro:#FF9F43}
-body{background-image:radial-gradient(circle at 12% 0%,rgba(255,92,122,.22),transparent 38%),radial-gradient(circle at 92% 30%,rgba(76,201,240,.16),transparent 36%)}
-header h1{text-shadow:3px 3px 0 var(--red)}
-.panel{border:2px solid var(--blue);border-radius:28px;padding:36px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
-h2{font-size:34px;font-weight:700}
-.steps{gap:12px}
-.step-pill{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 10px;border-radius:16px;font-size:16px;background:var(--card);color:var(--muted)}
-.step-pill.active{background:#272752;border-color:var(--gold);color:var(--txt)}
-.step-pill.done{background:var(--card);color:var(--txt)}
-.step-pill .num{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;background:var(--blue);color:var(--txt);flex-shrink:0}
-.step-pill.active .num{background:var(--gold);color:var(--bg)}
-.step-pill.done .num{background:var(--ok);color:var(--bg)}
-.bar>div{background:linear-gradient(90deg,var(--red),var(--gold))}
-input[type=text],textarea,select{background:var(--bg);border-radius:14px}
-.btn{border-radius:16px;padding:15px 28px;transition:transform .1s,box-shadow .1s}
-.btn-main{background:var(--red);color:var(--bg);box-shadow:0 5px 0 #B8324D}
-.btn-gold{background:var(--gold);color:var(--bg);box-shadow:0 5px 0 #B38A12}
-.btn-ghost{border-color:var(--blue);box-shadow:none}
-.btn-main:active,.btn-gold:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.4)}
-.grade-btn{background:var(--bg);border-radius:20px}
-.grade-btn.sel{background:#272752;box-shadow:0 0 0 4px rgba(255,201,60,.18)}
-.chip{background:var(--bg)}
-.chip.sel{background:var(--red);border-color:var(--red);color:var(--bg);font-weight:600}
-.counter{background:#272752;border-radius:18px;padding:14px 20px}
-.tab{border-radius:999px;background:var(--bg);padding:10px 18px}
-.tab.active{background:#272752}
-.ccard{background:var(--bg);border-radius:22px;padding:20px;min-height:190px}
-.ccard h4{font-size:20px}
-.ccard .em{width:52px;height:52px;border-radius:16px;background:var(--card);border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:6px}
-.ccard.sel{box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 22%,transparent)}
-.proof{background:var(--bg);border-left-color:var(--gold);border-radius:18px}
-.challenge{border-radius:22px}
-.send-box{border-radius:20px;background:linear-gradient(135deg,rgba(61,220,151,.16),rgba(76,201,240,.12))}
-.cv{--a:#FF5C7A;--b:#FFC93C;--bgc:#14142B;--panel:#1E1E3F;--m:#C9C9E6;border-radius:26px}
-.cv-head{background:linear-gradient(120deg,#FF5C7A 0%,#7B3FE4 100%);padding:40px 48px}
-.cv-photo{width:150px;height:150px;border-width:6px}
-.cv-name{font-size:44px}
-.cv-role{background:rgba(20,20,43,.45)}
-.cv h3{font-size:14px}
-.tag{border-radius:999px;background:#272752;padding:6px 13px}
-.skill .tr{background:#34346B}
-.exp{background:#1E1E3F;border-radius:18px;padding:16px 18px}
-.cv.t-clasico .exp{background:#fff}
-.lst li{border-radius:10px;background:#272752}
-.cv.t-clasico .lst li,.cv.t-clasico .tag{background:#dfe6f6}
-.badge b{border-radius:50%}
-@media(max-width:720px){.panel{padding:22px}.step-pill .num{display:none}h2{font-size:26px}}
+
+/* ===== REDISEÑO PAPEL 2026 · CV ===== */
+.cv{--a:#D8402A;--b:#FFC533;--bgc:#ffffff;--panel:#FFF1D0;--t:#1F1B2E;--m:#4A4560;font-family:'Nunito',system-ui,sans-serif;font-weight:600;border:3px solid #1F1B2E;border-radius:22px;box-shadow:8px 8px 0 #1F1B2E;overflow:hidden}
+.cv-head{background:var(--b);border-bottom:3px solid #1F1B2E;padding:36px 40px;gap:32px}
+.cv-photo{width:150px;height:150px;border-radius:18px;border:3px solid #1F1B2E;background-color:#fff;transform:rotate(-4deg);box-shadow:5px 5px 0 #1F1B2E}
+.cv-name{font-family:'Lilita One',sans-serif;font-weight:400;font-size:52px;line-height:1;color:#1F1B2E}
+.cv-nick{font-family:'Nunito',sans-serif;font-weight:800;font-size:20px;color:#1F1B2E;opacity:.75}
+.cv-role{background:#1F1B2E;color:#FFF6E5;border-radius:10px;padding:6px 16px;font-weight:800;transform:rotate(-1deg)}
+.cv-quote{color:#1F1B2E;opacity:1;font-weight:700}
+.cv-side{border-right:3px solid #1F1B2E}
+.cv h3{font-family:'Lilita One',sans-serif;font-weight:400;font-size:22px;letter-spacing:0;text-transform:none;border:0;padding:0;margin:20px 0 8px;color:var(--a)}
+.cv.t-clasico h3{color:var(--b);border:0}
+.tag{border:2.5px solid var(--t);border-radius:10px;background:var(--bgc);font-weight:800;padding:5px 12px}
+.skill .top{font-weight:800}
+.skill .tr{height:14px;border:2.5px solid var(--t);border-radius:8px;background:var(--bgc)}
+.skill .tr div{border-radius:0;border-right:2.5px solid var(--t)}
+.badge b{border-radius:14px;background:var(--b);border:2.5px solid #1F1B2E;color:#1F1B2E}
+.badge:nth-child(odd) b{transform:rotate(-4deg)}
+.badge:nth-child(even) b{transform:rotate(4deg)}
+.exp{background:var(--bgc);border:2.5px solid var(--t);border-radius:14px;box-shadow:4px 4px 0 var(--t);padding:14px 18px}
+.exp .h{font-weight:800}
+.exp .lv{color:#E0A100}
+.lst li{background:transparent;border:2px solid var(--t);border-radius:10px;font-weight:700}
+.ref{background:var(--panel);border:2.5px solid var(--t);border-radius:14px}
+.cv-foot{border-top:3px solid #1F1B2E;background:var(--panel);font-weight:700}
+.area-block .an{font-weight:800;color:var(--t)}
+/* ===== REDISEÑO PAPEL 2026 · APP ===== */
+:root{--bg:#FFF6E5;--card:#fff;--blue:#1F1B2E;--red:#FF5A3C;--gold:#FFC533;--txt:#1F1B2E;--muted:#4A4560;--ok:#138A62;
+  --c-alf:#4DA3FF;--c-ciu:#2FBF8F;--c-pyr:#FF5A3C;--c-mak:#FFC533;--c-ia:#9D86FF;--c-pro:#FF8FC0}
+body{font-family:'Nunito',system-ui,sans-serif;font-weight:600;background-color:var(--bg);background-image:radial-gradient(rgba(31,27,46,.16) 1.5px,transparent 1.5px);background-size:24px 24px;color:var(--txt)}
+header h1{font-family:'Lilita One',sans-serif;font-weight:400;font-size:clamp(30px,5vw,52px);line-height:1.1;color:var(--txt);text-shadow:none;letter-spacing:.5px}
+header p{color:var(--muted);font-weight:700}
+.steps{gap:10px;margin:22px 0 18px}
+.step-pill{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:var(--txt);border:2.5px solid var(--txt);border-radius:12px;padding:10px 8px;font-size:16px;font-weight:800}
+.step-pill.active{background:var(--gold);box-shadow:4px 4px 0 var(--txt);transform:translateY(-2px);color:var(--txt);border-color:var(--txt)}
+.step-pill.done{background:#CFF3E4;color:var(--txt)}
+.step-pill .num{width:28px;height:28px;border-radius:50%;border:2.5px solid var(--txt);background:#fff;display:inline-flex;align-items:center;justify-content:center;font-family:'Lilita One',sans-serif;font-weight:400;flex-shrink:0}
+.step-pill.active .num{background:#fff}.step-pill.done .num{background:#3CCB9B}
+.bar{height:14px;background:#fff;border:2.5px solid var(--txt);border-radius:10px}
+.bar>div{background:var(--red);border-right:2.5px solid var(--txt)}
+.panel{background:#fff;border:3px solid var(--txt);border-radius:22px;padding:36px;box-shadow:8px 8px 0 var(--txt)}
+h2{font-family:'Lilita One',sans-serif;font-weight:400;font-size:38px}
+h2 span{color:#D8402A}
+.hint{color:var(--muted);font-weight:600}
+label.lbl{font-weight:800}
+input[type=text],textarea,select{background:#fff;color:var(--txt);border:2.5px solid var(--txt);border-radius:12px;font-weight:600}
+input:focus,textarea:focus,select:focus{border-color:var(--red);box-shadow:3px 3px 0 var(--txt)}
+.grade-btn{background:#fff;color:var(--txt);border:3px solid var(--txt);border-radius:14px;box-shadow:4px 4px 0 var(--txt);font-family:'Lilita One',sans-serif;font-weight:400}
+.grade-btn.sel{background:var(--gold);color:var(--txt);border-color:var(--txt);box-shadow:4px 4px 0 var(--txt)}
+.photo{background-color:#FFF1D0;border:3px dashed var(--txt);border-radius:22px;transform:rotate(-3deg)}
+.photo.has{border-style:solid;box-shadow:5px 5px 0 var(--txt)}
+.chip{background:#fff;border:2.5px solid var(--txt);border-radius:12px;font-weight:700;color:var(--txt)}
+.chip:hover{border-color:var(--txt);background:#FFF1D0}
+.chip.sel{background:var(--gold);border-color:var(--txt);color:var(--txt);box-shadow:3px 3px 0 var(--txt)}
+.btn{font-family:'Lilita One',sans-serif;font-weight:400;font-size:21px;border:3px solid var(--txt);border-radius:14px;box-shadow:4px 4px 0 var(--txt);color:var(--txt);padding:12px 24px;transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--txt)}
+.btn:disabled{opacity:.6}
+.btn-main{background:var(--gold);color:var(--txt)}.btn-main:hover{filter:none;background:#FFD45E}
+.btn-gold{background:#3CCB9B;color:var(--txt)}
+.btn-ghost{background:#fff;color:var(--txt);border:3px solid var(--txt)}
+.err{background:#FFE9E3;border:2.5px solid var(--txt);color:#9E2B1B;font-weight:700;border-radius:12px}
+.tab{background:#fff;border:2.5px solid var(--txt);border-radius:12px;color:var(--txt);font-weight:800}
+.tab.active{background:var(--tc);color:var(--txt);border-color:var(--txt);box-shadow:4px 4px 0 var(--txt);transform:translateY(-2px)}
+.tab .count{background:var(--txt);color:#FFF6E5;border-radius:999px}
+.counter{background:#E4F8EF;border:2.5px solid var(--txt);border-radius:14px;font-weight:700}
+.ccard{background:#fff;border:3px solid var(--txt);border-radius:16px;box-shadow:5px 5px 0 var(--txt);padding:20px;min-height:190px;transition:transform .1s,box-shadow .1s}
+.ccard:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--txt)}
+.ccard .em{width:54px;height:54px;border-radius:12px;background:#FFC533;border:2.5px solid var(--txt);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:6px}
+.ccard h4{font-size:20px;font-weight:800;line-height:1.2}
+.ccard p{color:var(--muted);font-size:16px;font-weight:600}
+.ccard.sel{background:color-mix(in srgb,var(--ac) 16%,#fff);border-color:var(--txt);box-shadow:5px 5px 0 var(--txt)}
+.ccard.sel::after{top:-12px;right:-10px;width:34px;height:34px;background:var(--red);color:#fff;border:3px solid var(--txt);transform:rotate(8deg)}
+.star{filter:grayscale(1) opacity(.35)}
+.star-lbl{color:var(--txt);font-weight:800}
+.proof{background:#FFF1D0;border:2.5px solid var(--txt);border-left:2.5px solid var(--txt);border-radius:14px;box-shadow:4px 4px 0 var(--txt)}
+.charc.ok{color:var(--ok);font-weight:800}
+.challenge{background:#FFF1D0;border:3px dashed var(--txt);border-radius:18px}
+.challenge h3{color:#D8402A;font-family:'Lilita One',sans-serif;font-weight:400;font-size:24px}
+.send-box{background:#E4F8EF;border:3px solid var(--txt);border-radius:16px;box-shadow:5px 5px 0 var(--txt)}
+.send-st.ok{color:var(--ok)}.send-st.bad{color:#9E2B1B}
+.cam-box{background:#fff;border:3px solid var(--txt);box-shadow:8px 8px 0 var(--txt)}
+.cam-view{border:4px solid var(--txt)}
+.cam-count{font-family:'Lilita One',sans-serif;color:var(--gold);text-shadow:4px 4px 0 var(--txt)}
+.theme-dot{border:3px solid var(--txt)}.theme-dot.sel{box-shadow:0 0 0 3px var(--gold)}
+@media(max-width:720px){.panel{padding:22px}.step-pill .num{display:none}h2{font-size:28px}.step-pill{font-size:13px}}
+@media print{.cv{box-shadow:none;border:0;border-radius:0}}
 @media print{
   body{background:none}
   .no-print,header,.steps,.bar,.nav,.cv-tools{display:none!important}
@@ -336,7 +373,7 @@ input[type=text],textarea,select{background:var(--bg);border-radius:14px}
   <section class="panel" id="p4">
     <div class="cv-tools no-print">
       <b>Estilo:</b>
-      <div class="theme-dot sel" data-t="" style="background:linear-gradient(135deg,#e94560,#1a1a2e)" title="Gamer"></div>
+      <div class="theme-dot sel" data-t="" style="background:linear-gradient(135deg,#FFC533,#FF5A3C)" title="Papel"></div>
       <div class="theme-dot" data-t="t-clasico" style="background:linear-gradient(135deg,#fff,#0f3460)" title="Clásico"></div>
       <div class="theme-dot" data-t="t-neon" style="background:linear-gradient(135deg,#00f5d4,#f15bb5)" title="Neón"></div>
       <div class="theme-dot" data-t="t-selva" style="background:linear-gradient(135deg,#2ecc71,#0b2b1f)" title="Selva"></div>
@@ -693,7 +730,7 @@ function renderCV(){
       <h3>📚 Experiencia 2026</h3>
       ${Object.entries(AREAS).map(([k,a])=>{
         const ts=sel.filter(t=>t.a===k); if(!ts.length) return '';
-        return `<div class="area-block"><div class="an" style="color:${a.hex}">${a.e} ${a.n}</div><ul class="lst">${ts.map(t=>`<li>${t.em} ${esc(t.n)} ${'★'.repeat(S.sel[t.id]||0)}</li>`).join('')}</ul></div>`;
+        return `<div class="area-block"><div class="an">${a.e} ${a.n}</div><ul class="lst">${ts.map(t=>`<li>${t.em} ${esc(t.n)} ${'★'.repeat(S.sel[t.id]||0)}</li>`).join('')}</ul></div>`;
       }).join('')}
       ${S.refTexto.trim()?`<h3>🤝 Recomendación</h3><div class="ref">“${esc(S.refTexto)}”<br><b>— ${esc(S.refNombre||'Un compañero/a')}</b></div>`:''}
     </main>
@@ -722,7 +759,7 @@ async function enviar(){
   btn.disabled=false;
 }
 function confetti(){
-  const cols=['#e94560','#ffd700','#4cc9f0','#2ecc71','#b388ff'];
+  const cols=['#FF5A3C','#FFC533','#4DA3FF','#3CCB9B','#9D86FF'];
   for(let i=0;i<70;i++){
     const d=document.createElement('div');d.className='confetti';
     d.style.left=Math.random()*100+'vw';d.style.background=cols[i%5];
