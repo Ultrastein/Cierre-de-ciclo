@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Armá tu CV Tech 2026 · Bereshit</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1a1a2e; --card:#16213e; --blue:#0f3460; --red:#e94560; --gold:#ffd700;
+  --txt:#f4f4f8; --muted:#a9b0c7; --ok:#2ecc71;
+  --c-alf:#4cc9f0; --c-ciu:#2ecc71; --c-pyr:#e94560; --c-mak:#ffd700; --c-ia:#b388ff; --c-pro:#ff9f43;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Fredoka',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;font-size:18px;
+  background-image:radial-gradient(circle at 10% 10%,rgba(233,69,96,.15),transparent 40%),radial-gradient(circle at 90% 80%,rgba(76,201,240,.12),transparent 40%)}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 18px 80px}
+header{text-align:center;margin-bottom:22px}
+header h1{font-family:'Press Start 2P',monospace;font-size:clamp(18px,3.2vw,30px);line-height:1.5;color:var(--gold);text-shadow:3px 3px 0 var(--red)}
+header p{color:var(--muted);margin-top:8px}
+
+/* progress */
+.steps{display:flex;gap:8px;margin:20px 0 26px}
+.step-pill{flex:1;text-align:center;padding:10px 6px;border-radius:14px;background:var(--card);color:var(--muted);font-weight:600;font-size:15px;border:2px solid transparent;cursor:pointer;transition:.2s}
+.step-pill.active{border-color:var(--gold);color:var(--gold)}
+.step-pill.done{background:var(--blue);color:var(--txt)}
+.bar{height:10px;background:var(--card);border-radius:10px;overflow:hidden}
+.bar>div{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));transition:width .4s}
+
+.panel{display:none;background:var(--card);border-radius:22px;padding:28px;box-shadow:0 10px 30px rgba(0,0,0,.35);animation:pop .35s}
+.panel.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+h2{font-size:28px;margin-bottom:6px}
+h2 span{color:var(--gold)}
+.hint{color:var(--muted);margin-bottom:20px}
+label.lbl{display:block;font-weight:600;margin:16px 0 6px}
+input[type=text],textarea,select{width:100%;padding:13px 15px;border-radius:12px;border:2px solid var(--blue);background:#0d1630;color:var(--txt);font:inherit;font-size:18px;outline:none;transition:.2s}
+input:focus,textarea:focus,select:focus{border-color:var(--gold)}
+textarea{min-height:90px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}.step-pill{font-size:12px}}
+
+.grades{display:flex;gap:14px;flex-wrap:wrap}
+.grade-btn{flex:1;min-width:120px;padding:20px;border-radius:18px;border:3px solid var(--blue);background:#0d1630;color:var(--txt);font:inherit;font-size:30px;font-weight:700;cursor:pointer;transition:.2s}
+.grade-btn:hover{transform:translateY(-3px)}
+.grade-btn.sel{border-color:var(--gold);background:var(--blue);color:var(--gold);box-shadow:0 0 0 4px rgba(255,215,0,.15)}
+
+.photo-zone{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.photo{width:150px;height:150px;border-radius:50%;border:4px dashed var(--gold);display:flex;align-items:center;justify-content:center;font-size:52px;cursor:pointer;background:#0d1630 center/cover no-repeat;transition:.2s;flex-shrink:0}
+.photo:hover{transform:scale(1.04)}
+.photo.has{border-style:solid;font-size:0}
+
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{padding:10px 16px;border-radius:30px;background:#0d1630;border:2px solid var(--blue);cursor:pointer;user-select:none;transition:.15s;font-size:17px}
+.chip:hover{border-color:var(--muted)}
+.chip.sel{background:var(--red);border-color:var(--red);color:#fff}
+.add-row{display:flex;gap:10px;margin-top:12px}
+.add-row input{flex:1}
+
+.btn{padding:14px 26px;border-radius:14px;border:none;font:inherit;font-size:19px;font-weight:700;cursor:pointer;transition:.15s}
+.btn:active{transform:scale(.97)}
+.btn-main{background:var(--red);color:#fff}
+.btn-main:hover{filter:brightness(1.1)}
+.btn-gold{background:var(--gold);color:#1a1a2e}
+.btn-ghost{background:transparent;color:var(--txt);border:2px solid var(--blue)}
+.nav{display:flex;justify-content:space-between;margin-top:28px;gap:12px}
+
+.err{background:rgba(233,69,96,.15);border:2px solid var(--red);color:#ffb3c0;padding:12px 16px;border-radius:12px;margin-top:16px;display:none}
+
+/* contenidos */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tab{padding:10px 16px;border-radius:12px;background:#0d1630;border:2px solid var(--blue);cursor:pointer;font-weight:600;font-size:16px}
+.tab.active{border-color:var(--tc);color:var(--tc)}
+.tab .count{display:inline-block;min-width:24px;padding:0 6px;margin-left:6px;border-radius:10px;background:var(--tc);color:#1a1a2e;font-size:14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.ccard{background:#0d1630;border:2px solid var(--blue);border-radius:16px;padding:16px;cursor:pointer;transition:.15s;position:relative}
+.ccard:hover{transform:translateY(-2px)}
+.ccard .em{font-size:30px}
+.ccard h4{font-size:18px;margin:6px 0 4px}
+.ccard p{font-size:15px;color:var(--muted)}
+.ccard.sel{border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 25%,transparent)}
+.ccard.sel::after{content:'✔';position:absolute;top:10px;right:12px;background:var(--ac);color:#1a1a2e;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+.stars{display:none;margin-top:10px;gap:4px;align-items:center;flex-wrap:wrap}
+.ccard.sel .stars{display:flex}
+.star{font-size:24px;cursor:pointer;filter:grayscale(1) opacity(.4);transition:.1s}
+.star.on{filter:none}
+.star-lbl{font-size:13px;color:var(--gold);margin-left:6px}
+
+.counter{background:var(--blue);padding:12px 16px;border-radius:12px;margin-bottom:16px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+.proof{background:#0d1630;border-left:6px solid var(--gold);border-radius:12px;padding:16px;margin-top:14px}
+.proof h4{margin-bottom:8px}
+.charc{font-size:13px;color:var(--muted);text-align:right;margin-top:4px}
+.charc.ok{color:var(--ok)}
+
+.challenge{margin-top:24px;background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(233,69,96,.12));border:2px dashed var(--gold);border-radius:16px;padding:18px}
+.challenge h3{color:var(--gold);margin-bottom:6px}
+
+/* CV */
+.cv-tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.theme-dot{width:38px;height:38px;border-radius:50%;cursor:pointer;border:3px solid transparent}
+.theme-dot.sel{border-color:#fff}
+.cv{border-radius:22px;overflow:hidden;font-size:16px;--a:#e94560;--b:#ffd700;--bgc:#1a1a2e;--panel:#0f3460;--t:#fff;--m:#c5cbe0;background:var(--bgc);color:var(--t)}
+.cv.t-clasico{--a:#0f3460;--b:#e94560;--bgc:#ffffff;--panel:#eef2fb;--t:#1a1a2e;--m:#4a5470}
+.cv.t-neon{--a:#00f5d4;--b:#f15bb5;--bgc:#10002b;--panel:#240046;--t:#fff;--m:#cdb4db}
+.cv.t-selva{--a:#2ecc71;--b:#ffd700;--bgc:#0b2b1f;--panel:#14402e;--t:#fff;--m:#bfe3cf}
+.cv-head{display:flex;gap:24px;align-items:center;padding:28px;background:linear-gradient(120deg,var(--a),var(--panel));flex-wrap:wrap}
+.cv-photo{width:140px;height:140px;border-radius:50%;border:5px solid var(--b);background:#0d1630 center/cover;display:flex;align-items:center;justify-content:center;font-size:56px;flex-shrink:0}
+.cv-name{font-size:34px;font-weight:700;line-height:1.1;color:#fff}
+.cv-nick{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--b);margin-top:8px}
+.cv-role{display:inline-block;margin-top:10px;background:rgba(0,0,0,.3);padding:6px 14px;border-radius:20px;font-weight:600;color:#fff}
+.cv-quote{font-style:italic;margin-top:10px;color:#fff;opacity:.9}
+.cv-body{display:grid;grid-template-columns:300px 1fr;gap:0}
+@media(max-width:800px){.cv-body{grid-template-columns:1fr}}
+.cv-side{background:var(--panel);padding:22px}
+.cv-main{padding:22px}
+.cv h3{font-size:15px;letter-spacing:2px;text-transform:uppercase;color:var(--a);margin:18px 0 10px;border-bottom:2px solid var(--a);padding-bottom:4px}
+.cv.t-clasico h3{color:var(--b);border-color:var(--b)}
+.cv h3:first-child{margin-top:0}
+.skill{margin-bottom:10px}
+.skill .top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:3px}
+.skill .tr{height:12px;border-radius:8px;background:rgba(128,128,128,.25);overflow:hidden}
+.skill .tr div{height:100%;border-radius:8px}
+.tagl{display:flex;flex-wrap:wrap;gap:6px}
+.tag{padding:5px 11px;border-radius:14px;background:rgba(128,128,128,.2);font-size:14px}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px}
+.badge{display:flex;flex-direction:column;align-items:center;width:78px;text-align:center;font-size:11px;color:var(--m)}
+.badge b{font-size:30px;width:56px;height:56px;border-radius:50%;background:rgba(128,128,128,.2);display:flex;align-items:center;justify-content:center;margin-bottom:4px;border:2px solid var(--b)}
+.exp{margin-bottom:14px}
+.exp .h{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px}
+.exp .lv{font-size:13px;color:var(--b);font-weight:600}
+.exp p{color:var(--m);margin-top:4px;line-height:1.4;overflow-wrap:anywhere}
+.area-block{margin-bottom:10px}
+.area-block .an{font-weight:700;font-size:15px;margin-bottom:5px}
+.lst{list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.lst li{font-size:14px;padding:4px 10px;border-radius:10px;background:rgba(128,128,128,.18)}
+.cv-foot{text-align:center;padding:12px;font-size:13px;color:var(--m);border-top:1px solid rgba(128,128,128,.25)}
+.ref{background:rgba(128,128,128,.15);border-radius:12px;padding:12px;font-style:italic;color:var(--m)}
+
+.send-box{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;background:linear-gradient(135deg,rgba(46,204,113,.15),rgba(76,201,240,.12));border:2px solid var(--ok);border-radius:16px;padding:16px 20px;margin-bottom:18px}
+.send-st{margin-top:8px;font-weight:600}
+.send-st.ok{color:var(--ok)}.send-st.bad{color:#ffb3c0}
+.btn:disabled{opacity:.6;cursor:wait}
+.confetti{position:fixed;top:-10px;width:10px;height:14px;z-index:999;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+.cam-modal{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px}
+.cam-modal.show{display:flex}
+.cam-box{background:var(--card);border-radius:22px;padding:22px;width:min(560px,100%);text-align:center;border:3px solid var(--gold)}
+.cam-view{position:relative;aspect-ratio:1;max-width:400px;margin:14px auto;border-radius:50%;overflow:hidden;border:5px solid var(--gold);background:#000}
+.cam-view video,.cam-view img{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam-view img{display:none;position:absolute;inset:0;transform:none}
+.cam-count{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:70px;color:var(--gold);text-shadow:4px 4px 0 var(--red);pointer-events:none}
+.cam-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.flash{animation:flash .4s}
+@keyframes flash{from{background:#fff}to{background:#000}}
+@media print{
+  body{background:none}
+  .no-print,header,.steps,.bar,.nav,.cv-tools{display:none!important}
+  .panel{box-shadow:none;padding:0;background:none}
+  .wrap{padding:0;max-width:none}
+  .cv{-webkit-print-color-adjust:exact;print-color-adjust:exact;border-radius:0}
+  .cv-body{grid-template-columns:260px 1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="no-print">
+    <h1>🚀 ARMÁ TU CV TECH 2026</h1>
+    <p>Mostrá todo lo que aprendiste este año en Tecnología · Escuela Bereshit</p>
+  </header>
+
+  <div class="steps" id="steps"></div>
+  <div class="bar no-print"><div id="barFill" style="width:25%"></div></div>
+  <br>
+
+  <!-- PASO 1 -->
+  <section class="panel show" id="p1">
+    <h2>Paso 1: <span>¿Quién sos?</span></h2>
+    <p class="hint">Todo CV arranca con tus datos. ¡Elegí tu grado y subí una foto!</p>
+
+    <label class="lbl">¿En qué grado estás?</label>
+    <div class="grades">
+      <button class="grade-btn" data-g="5">5°</button>
+      <button class="grade-btn" data-g="6">6°</button>
+      <button class="grade-btn" data-g="7">7°</button>
+    </div>
+
+    <label class="lbl">Tu foto</label>
+    <div class="photo-zone">
+      <div class="photo" id="photo" title="Tocá para sacarte una foto">📷</div>
+      <div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-main" type="button" onclick="openCam()">📸 Sacarme una foto</button>
+          <button class="btn btn-ghost" type="button" onclick="$('photoInput').click()">📁 Subir archivo</button>
+        </div>
+        <p class="hint" style="margin:8px 0 0">Tip: que se vea bien tu cara y con buena luz 😎</p>
+        <input type="file" id="photoInput" accept="image/*" hidden>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div><label class="lbl">Nombre</label><input type="text" id="nombre" placeholder="Ej: Nicolas"></div>
+      <div><label class="lbl">Apellido</label><input type="text" id="apellido" placeholder="Ej: Kane"></div>
+    </div>
+    <div class="grid2">
+      <div><label class="lbl">Tu apodo gamer / tech (opcional)</label><input type="text" id="apodo" placeholder="Ej: NicoBot_3000"></div>
+      <div>
+        <label class="lbl">¿Qué puesto tech te representa más?</label>
+        <select id="rol">
+          <option value="">Elegí uno…</option>
+          <option>🤖 Constructor/a de robots</option>
+          <option>👾 Programador/a de videojuegos</option>
+          <option>🧊 Diseñador/a 3D</option>
+          <option>🕵️ Detective de la ciberseguridad</option>
+          <option>🧠 Entrenador/a de Inteligencia Artificial</option>
+          <option>💡 Inventor/a maker</option>
+          <option>📊 Mago/a de las planillas</option>
+          <option>🎨 Artista digital</option>
+        </select>
+      </div>
+    </div>
+    <div class="err" id="e1"></div>
+    <div class="nav"><span></span><button class="btn btn-main" onclick="go(2)">Siguiente ➜</button></div>
+  </section>
+
+  <!-- PASO 2 -->
+  <section class="panel" id="p2">
+    <h2>Paso 2: <span>Lo que te gusta hacer</span></h2>
+    <p class="hint">Elegí entre 2 y 6 cosas que te encantan (o agregá las tuyas).</p>
+    <div class="chips" id="hobbies"></div>
+    <div class="add-row">
+      <input type="text" id="hobbyNew" placeholder="Agregá otra cosa que te guste…">
+      <button class="btn btn-gold" onclick="addHobby()">+ Agregar</button>
+    </div>
+
+    <label class="lbl">⚡ Mi superpoder (algo en lo que soy muy bueno/a)</label>
+    <input type="text" id="superpoder" placeholder="Ej: Nunca me rindo hasta que el robot funciona">
+
+    <label class="lbl">💬 Una frase que me representa</label>
+    <input type="text" id="frase" placeholder="Ej: Si se rompe, lo arreglo. Si funciona, lo mejoro.">
+    <div class="err" id="e2"></div>
+    <div class="nav"><button class="btn btn-ghost" onclick="go(1)">⬅ Atrás</button><button class="btn btn-main" onclick="go(3)">Siguiente ➜</button></div>
+  </section>
+
+  <!-- PASO 3 -->
+  <section class="panel" id="p3">
+    <h2>Paso 3: <span>Lo que aprendiste</span></h2>
+    <p class="hint">Tocá cada tema que aprendiste este año y poné estrellas: ⭐ "Lo vi" · ⭐⭐ "Lo sé hacer" · ⭐⭐⭐ "¡Lo podría enseñar!"</p>
+    <div class="counter"><span>✅ Temas marcados: <b id="cnt">0</b></span><span>🎯 Mínimo: <b>8 temas</b>, al menos uno de cada área</span></div>
+    <div class="tabs" id="tabs"></div>
+    <div class="cards" id="cards"></div>
+
+    <h2 style="margin-top:32px">🏆 <span>Demostralo</span></h2>
+    <p class="hint">Un CV no solo dice "sé hacer esto": lo demuestra. Elegí tus 3 temas más fuertes y explicá con tus palabras qué aprendiste.</p>
+    <div id="proofs"></div>
+
+    <div class="grid2">
+      <div>
+        <label class="lbl">🌟 Mi proyecto o clase favorita del año</label>
+        <select id="favorito"></select>
+        <textarea id="favPorque" placeholder="¿Por qué fue tu favorita? ¿Qué hiciste?" style="margin-top:8px"></textarea>
+      </div>
+      <div>
+        <label class="lbl">🧗 Algo que me costó… y cómo lo resolví</label>
+        <textarea id="costo" placeholder="Ej: Al principio el Ozobot no seguía la línea. Probé cambiar el grosor y…" style="min-height:142px"></textarea>
+      </div>
+    </div>
+    <label class="lbl">🔮 El año que viene quiero aprender…</label>
+    <input type="text" id="futuro" placeholder="Ej: Programar mi propio videojuego en Scratch con niveles">
+
+    <div class="challenge">
+      <h3>🔥 Desafío extra (para los que terminan rápido)</h3>
+      <p>Pedile a un compañero/a que te escriba una <b>recomendación</b> para tu CV: ¿por qué serías un gran integrante de un equipo tech?</p>
+      <div class="grid2" style="margin-top:8px">
+        <input type="text" id="refNombre" placeholder="Nombre de tu compañero/a">
+        <input type="text" id="refTexto" placeholder="Lo que dice de vos…">
+      </div>
+    </div>
+
+    <div class="err" id="e3"></div>
+    <div class="nav"><button class="btn btn-ghost" onclick="go(2)">⬅ Atrás</button><button class="btn btn-main" onclick="go(4)">¡Generar mi CV! 🚀</button></div>
+  </section>
+
+  <!-- PASO 4 -->
+  <section class="panel" id="p4">
+    <div class="cv-tools no-print">
+      <b>Estilo:</b>
+      <div class="theme-dot sel" data-t="" style="background:linear-gradient(135deg,#e94560,#1a1a2e)" title="Gamer"></div>
+      <div class="theme-dot" data-t="t-clasico" style="background:linear-gradient(135deg,#fff,#0f3460)" title="Clásico"></div>
+      <div class="theme-dot" data-t="t-neon" style="background:linear-gradient(135deg,#00f5d4,#f15bb5)" title="Neón"></div>
+      <div class="theme-dot" data-t="t-selva" style="background:linear-gradient(135deg,#2ecc71,#0b2b1f)" title="Selva"></div>
+      <span style="flex:1"></span>
+      <button class="btn btn-ghost" onclick="go(3)">✏️ Editar</button>
+      <button class="btn btn-gold" onclick="window.print()">🖨️ Guardar PDF</button>
+    </div>
+    <div class="send-box no-print" id="sendBox">
+      <div>
+        <b>📨 ¿Listo? ¡Mandáselo a tu profe!</b>
+        <div class="hint" style="margin:4px 0 0">Se envía directo, sin mail ni cuenta. Si después cambiás algo, podés volver a enviarlo.</div>
+        <div id="sendSt" class="send-st"></div>
+      </div>
+      <button class="btn btn-main" id="sendBtn" onclick="enviar()">📨 Enviar mi CV</button>
+    </div>
+    <div class="cv" id="cv"></div>
+    <p class="hint no-print" style="margin-top:14px">Para entregarlo: tocá <b>Guardar PDF</b> → en "Destino" elegí <b>Guardar como PDF</b> → subilo a Classroom. (Activá "Gráficos de fondo" para que salgan los colores.)</p>
+  </section>
+</div>
+
+<div class="cam-modal" id="camModal">
+  <div class="cam-box">
+    <h2>📸 ¡Sonreí!</h2>
+    <div class="cam-view">
+      <video id="camVideo" autoplay playsinline muted></video>
+      <img id="camShot" alt="">
+      <div class="cam-count" id="camCount"></div>
+    </div>
+    <div class="err" id="camErr"></div>
+    <div class="cam-btns" id="camLive">
+      <button class="btn btn-ghost" onclick="closeCam()">Cancelar</button>
+      <button class="btn btn-gold" onclick="snap()">📸 ¡Sacar foto! (3, 2, 1…)</button>
+    </div>
+    <div class="cam-btns" id="camReview" style="display:none">
+      <button class="btn btn-ghost" onclick="retake()">🔄 Sacar otra</button>
+      <button class="btn btn-main" onclick="useShot()">✅ Usar esta foto</button>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+/* ===== CONTENIDOS (Grilla 2026 · Bereshit) ===== */
+const AREAS = {
+  alf:{n:'Alfabetización digital',e:'💻',c:'var(--c-alf)',hex:'#4cc9f0'},
+  ciu:{n:'Ciudadanía digital',e:'🛡️',c:'var(--c-ciu)',hex:'#2ecc71'},
+  pyr:{n:'Programación y robótica',e:'🤖',c:'var(--c-pyr)',hex:'#e94560'},
+  mak:{n:'Maker e ingeniería',e:'🔧',c:'var(--c-mak)',hex:'#ffd700'},
+  ia:{n:'Inteligencia Artificial',e:'🧠',c:'var(--c-ia)',hex:'#b388ff'},
+  pro:{n:'Proyectos',e:'🌍',c:'var(--c-pro)',hex:'#ff9f43'}
+};
+const T = (a,em,n,d)=>({a,em,n,d});
+const COMUN = [
+  T('alf','🌐','Exploradores de la Web','Buscar información en internet y saber si es confiable'),
+  T('alf','⌨️','Mecanografía','Escribir rápido y bien con el teclado'),
+  T('alf','🤝','Creadores colaborativos','Trabajar en equipo en el mismo documento en línea'),
+  T('alf','📝','El escritor digital (Google Docs)','Formato, títulos, imágenes y textos prolijos'),
+  T('alf','📽️','Historias con diapositivas','Armar presentaciones en Google Presentaciones'),
+  T('alf','📊','Magia con números y cuadritos','Planillas de cálculo: celdas, fórmulas y gráficos'),
+  T('alf','🏁','El Gran Desafío Digital','Clase integradora de todo lo aprendido'),
+  T('ciu','👣','Nuestra huella y seguridad digital','Qué dejamos en internet y cómo cuidarnos'),
+  T('ciu','©️','Derechos de autor','Usar contenido ajeno de forma correcta y citar'),
+  T('ciu','🦫','Desafío Bebras','Retos de lógica y pensamiento computacional'),
+  T('pyr','⚙️','Poleas con Lego Spike','Construcción e ingeniería con sistemas de poleas'),
+  T('pyr','🏗️','Lego WeDo: estructuras robustas','Construir estructuras firmes que no se caigan'),
+  T('pyr','💡','Robot articulado con luces','Armar un robot con partes móviles y luces'),
+  T('pyr','🦈','Scratch: Tiburón','Programar un juego con personajes y movimiento'),
+  T('pyr','🔵','Ozobot programado en la compu','Programar al Ozobot con bloques (Ozoblockly)'),
+  T('pyr','🧩','Compute It','Resolver niveles de programación cada vez más difíciles'),
+  T('pyr','🧱','Pilas Bloques (nivel intermedio)','Algoritmos, repeticiones y condicionales con bloques'),
+  T('pyr','🧊','Tinkercad: diseño 3D','Diseñar piezas en 3D y mandarlas a imprimir'),
+  T('mak','🚀','Desafío aterrizaje','Diseñar algo que proteja una carga al caer'),
+  T('mak','❤️','Pulsómetro','Construir un medidor de pulso'),
+  T('pro','📐','GeoGebra','Geometría y matemática con herramientas digitales'),
+  T('pro','🎤','Proyecto Integrador','Proyecto final con muestra para presentar')
+];
+const EXTRA = {
+  5:[
+    T('pyr','🧲','Lego Spike','Construir y programar con Lego Spike'),
+    T('pyr','📟','micro:bit','Programar una placa con LEDs, botones y sensores'),
+    T('mak','🌱','Fuentes de energía e impacto ambiental','Energías renovables y cómo afectan al planeta'),
+    T('ia','🏠','Usos cotidianos de la IA','Dónde aparece la IA en nuestra vida diaria'),
+    T('ia','⚖️','¿Qué es un sesgo?','Cuando la IA es injusta o se equivoca por los datos'),
+    T('ia','🧑‍💻','La IA como asistente','Usar la IA para ayudarnos, no para que haga todo'),
+    T('ia','📜','Nuestras reglas para usar IA','Acordar cómo usar la IA de forma responsable')
+  ],
+  6:[
+    T('pyr','🏓','Scratch: Ping Pong','Programar un juego con rebotes y puntaje'),
+    T('mak','🎲','Probabilidad (con Matemática)','Clase compartida: azar, experimentos y datos'),
+    T('ia','🎭','Estereotipos en la IA','Cómo la IA puede repetir prejuicios'),
+    T('ia','🔒','Privacidad y seguridad con IA','Qué datos NO compartir con una IA'),
+    T('ia','🧑‍💻','IA como asistente para programar','Pedirle ayuda a una IA para entender código'),
+    T('ia','🗣️','Debate final sobre IA','Argumentar a favor y en contra')
+  ],
+  7:[
+    T('pyr','⛏️','Studio Code: Minecraft Adventure','Programar personajes de Minecraft con bloques'),
+    T('mak','🎈','Auto robot a globo','Construir un auto que avanza con aire'),
+    T('mak','⚡','Fuentes de energía y redes de distribución','Cómo llega la electricidad a nuestras casas'),
+    T('ia','🧑‍💻','IA como asistente para programar','Pedirle ayuda a una IA para entender código'),
+    T('ia','🖼️','¿De quién es un contenido hecho con IA?','Autoría, derechos y creaciones con IA'),
+    T('ia','📚','¿Cómo aprende una IA?','Datos, entrenamiento y patrones'),
+    T('ia','🌎','Debate: IA, ética y futuro','Pensar el futuro de la IA con argumentos')
+  ]
+};
+const HOBBIES = ['⚽ Fútbol','🏀 Básquet','🎮 Videojuegos','🎨 Dibujar','🎵 Música','📚 Leer','🧱 Lego','💃 Bailar','🍳 Cocinar','🏊 Natación','🎬 Ver series','📷 Fotos y videos','🐶 Animales','🧩 Juegos de ingenio','🎸 Tocar un instrumento','🏕️ Aire libre','✂️ Manualidades','🎭 Teatro'];
+const STAR_LBL = ['','Lo vi','Lo sé hacer','¡Lo podría enseñar!'];
+
+/* ===== ESTADO ===== */
+let S = {grado:null,foto:'',nombre:'',apellido:'',apodo:'',rol:'',hobbies:[],extraHobbies:[],superpoder:'',frase:'',sel:{},proof:{},proofTxt:{},favorito:'',favPorque:'',costo:'',futuro:'',refNombre:'',refTexto:'',theme:''};
+let step=1, curTab='alf';
+const $=id=>document.getElementById(id);
+const temas=()=>S.grado?[...COMUN,...EXTRA[S.grado]].map((t,i)=>({...t,id:S.grado+'-'+t.n})):[];
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function save(){try{localStorage.setItem('cvtech2026',JSON.stringify(S))}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem('cvtech2026'));if(d)S={...S,...d}}catch(e){}}
+
+/* ===== STEPS ===== */
+const STEPN=['¿Quién sos?','Lo que te gusta','Lo que aprendiste','Tu CV'];
+function renderSteps(){
+  $('steps').innerHTML=STEPN.map((n,i)=>`<div class="step-pill ${i+1===step?'active':''} ${i+1<step?'done':''}" onclick="jump(${i+1})">${i+1}. ${n}</div>`).join('');
+  $('barFill').style.width=(step*25)+'%';
+}
+function jump(n){ if(n<step) go(n); else go(n); }
+function validate(n){
+  const e=$('e'+n); let msg='';
+  if(n===1){
+    if(!S.grado) msg='Elegí tu grado (5°, 6° o 7°).';
+    else if(!S.foto) msg='¡Falta tu foto! Tocá el círculo 📷 para subirla.';
+    else if(!S.nombre.trim()||!S.apellido.trim()) msg='Completá tu nombre y apellido.';
+    else if(!S.rol) msg='Elegí el puesto tech que más te representa.';
+  }
+  if(n===2){
+    const tot=S.hobbies.length;
+    if(tot<2) msg='Elegí al menos 2 cosas que te gusten.';
+    else if(!S.superpoder.trim()) msg='Contanos tu superpoder ⚡';
+  }
+  if(n===3){
+    const sel=temas().filter(t=>t.id in S.sel);
+    const areas=new Set(sel.map(t=>t.a));
+    const faltan=Object.keys(AREAS).filter(a=>!areas.has(a)).map(a=>AREAS[a].n);
+    const pr=Object.values(S.proof).filter(Boolean);
+    if(sel.length<8) msg=`Marcaste ${sel.length} temas. ¡Necesitás al menos 8!`;
+    else if(faltan.length) msg='Te falta marcar al menos un tema de: '+faltan.join(', ')+'.';
+    else if(sel.some(t=>!S.sel[t.id])) msg='Poné estrellas a todos los temas marcados.';
+    else if(pr.length<3||new Set(pr).size<3) msg='En "Demostralo" elegí 3 temas distintos.';
+    else if([0,1,2].some(i=>(S.proofTxt[i]||'').trim().length<40)) msg='Cada explicación de "Demostralo" tiene que tener al menos 40 caracteres. ¡Contá bien qué aprendiste!';
+    else if(!S.favorito) msg='Elegí tu clase o proyecto favorito.';
+    else if(S.costo.trim().length<20) msg='Contanos algo que te costó y cómo lo resolviste.';
+  }
+  e.style.display=msg?'block':'none'; e.textContent=msg?'⚠️ '+msg:'';
+  return !msg;
+}
+function go(n){
+  if(n>step){ for(let i=step;i<n;i++){ if(!validate(i)){ show(i); return; } } }
+  show(n);
+  if(n===4){ S.enviado=''; renderCV(); paintSend(); confetti(); }
+}
+function show(n){
+  step=n;
+  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('show',i+1===n));
+  renderSteps(); window.scrollTo({top:0,behavior:'smooth'});
+  if(n===3){ renderTabs(); renderCards(); renderProofs(); }
+}
+
+/* ===== PASO 1 ===== */
+document.querySelectorAll('.grade-btn').forEach(b=>b.onclick=()=>{
+  if(S.grado && S.grado!==b.dataset.g && Object.keys(S.sel).length && !confirm('Si cambiás de grado se borran los temas que marcaste. ¿Seguir?')) return;
+  if(S.grado!==b.dataset.g){S.sel={};S.proof={};S.favorito='';}
+  S.grado=b.dataset.g; paintGrade(); save();
+});
+function paintGrade(){document.querySelectorAll('.grade-btn').forEach(b=>b.classList.toggle('sel',b.dataset.g===S.grado))}
+$('photo').onclick=()=>openCam();
+/* ===== CÁMARA ===== */
+let camStream=null, shotData='';
+async function openCam(){
+  $('camModal').classList.add('show'); $('camErr').style.display='none';
+  $('camShot').style.display='none'; $('camVideo').style.display='block';
+  $('camLive').style.display='flex'; $('camReview').style.display='none';
+  try{
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720},height:{ideal:720}},audio:false});
+    $('camVideo').srcObject=camStream;
+  }catch(e){
+    $('camErr').style.display='block';
+    $('camErr').textContent='⚠️ No pude abrir la cámara. Fijate de tocar "Permitir" arriba en el navegador, o usá "Subir archivo".';
+    $('camLive').querySelector('.btn-gold').style.display='none';
+  }
+}
+function stopCam(){ if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null} }
+function closeCam(){ stopCam(); $('camModal').classList.remove('show'); $('camLive').querySelector('.btn-gold').style.display=''; }
+function snap(){
+  if(!camStream) return;
+  const btn=$('camLive').querySelector('.btn-gold'); btn.disabled=true;
+  let n=3; $('camCount').textContent=n;
+  const t=setInterval(()=>{
+    n--;
+    if(n>0){ $('camCount').textContent=n; return; }
+    clearInterval(t); $('camCount').textContent=''; btn.disabled=false;
+    const v=$('camVideo'), side=Math.min(v.videoWidth,v.videoHeight), sz=400;
+    const c=document.createElement('canvas'); c.width=c.height=sz; const x=c.getContext('2d');
+    x.translate(sz,0); x.scale(-1,1); // efecto espejo, como se ve en pantalla
+    x.drawImage(v,(v.videoWidth-side)/2,(v.videoHeight-side)/2,side,side,0,0,sz,sz);
+    shotData=c.toDataURL('image/jpeg',.88);
+    $('camShot').src=shotData; $('camShot').style.display='block'; $('camVideo').style.display='none';
+    document.querySelector('.cam-view').classList.remove('flash'); void document.querySelector('.cam-view').offsetWidth; document.querySelector('.cam-view').classList.add('flash');
+    $('camLive').style.display='none'; $('camReview').style.display='flex';
+  },1000);
+}
+function retake(){ $('camShot').style.display='none'; $('camVideo').style.display='block'; $('camLive').style.display='flex'; $('camReview').style.display='none'; }
+function useShot(){ S.foto=shotData; paintPhoto(); save(); closeCam(); }
+$('photoInput').onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const img=new Image();
+    img.onload=()=>{ // achica la foto para que no pese
+      const c=document.createElement('canvas'),m=400,sc=Math.min(1,m/Math.max(img.width,img.height));
+      c.width=img.width*sc;c.height=img.height*sc;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      S.foto=c.toDataURL('image/jpeg',.85); paintPhoto(); save();
+    };
+    img.src=ev.target.result;
+  };
+  r.readAsDataURL(f);
+};
+function paintPhoto(){const p=$('photo');if(S.foto){p.style.backgroundImage=`url(${S.foto})`;p.classList.add('has')}}
+['nombre','apellido','apodo','rol','superpoder','frase','favPorque','costo','futuro','refNombre','refTexto'].forEach(k=>{
+  const el=$(k); el.addEventListener('input',()=>{S[k]=el.value;save()});
+});
+
+/* ===== PASO 2 ===== */
+function renderHobbies(){
+  const all=[...HOBBIES,...S.extraHobbies];
+  $('hobbies').innerHTML=all.map(h=>`<div class="chip ${S.hobbies.includes(h)?'sel':''}" data-h="${esc(h)}">${esc(h)}</div>`).join('');
+  $('hobbies').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+    const h=c.dataset.h, i=S.hobbies.indexOf(h);
+    if(i>=0) S.hobbies.splice(i,1);
+    else { if(S.hobbies.length>=6){alert('¡Máximo 6! Sacá alguna para elegir otra.');return;} S.hobbies.push(h); }
+    renderHobbies(); save();
+  });
+}
+function addHobby(){
+  const v=$('hobbyNew').value.trim(); if(!v) return;
+  const h='✨ '+v;
+  if(!S.extraHobbies.includes(h)) S.extraHobbies.push(h);
+  if(S.hobbies.length<6 && !S.hobbies.includes(h)) S.hobbies.push(h);
+  $('hobbyNew').value=''; renderHobbies(); save();
+}
+$('hobbyNew').addEventListener('keydown',e=>{if(e.key==='Enter')addHobby()});
+
+/* ===== PASO 3 ===== */
+function renderTabs(){
+  const ts=temas();
+  $('tabs').innerHTML=Object.entries(AREAS).map(([k,a])=>{
+    const n=ts.filter(t=>t.a===k&&t.id in S.sel).length;
+    return `<div class="tab ${k===curTab?'active':''}" style="--tc:${a.c}" data-k="${k}">${a.e} ${a.n}<span class="count">${n}</span></div>`;
+  }).join('');
+  $('tabs').querySelectorAll('.tab').forEach(t=>t.onclick=()=>{curTab=t.dataset.k;renderTabs();renderCards()});
+  $('cnt').textContent=ts.filter(t=>t.id in S.sel).length;
+}
+function renderCards(){
+  const ts=temas().filter(t=>t.a===curTab), ac=AREAS[curTab].c;
+  $('cards').innerHTML=ts.map(t=>{
+    const v=S.sel[t.id]||0;
+    return `<div class="ccard ${t.id in S.sel?'sel':''}" style="--ac:${ac}" data-id="${esc(t.id)}">
+      <div class="em">${t.em}</div><h4>${esc(t.n)}</h4><p>${esc(t.d)}</p>
+      <div class="stars">${[1,2,3].map(i=>`<span class="star ${i<=v?'on':''}" data-s="${i}">⭐</span>`).join('')}<span class="star-lbl">${STAR_LBL[v]||'¿Cuánto lo sabés?'}</span></div>
+    </div>`;
+  }).join('');
+  $('cards').querySelectorAll('.ccard').forEach(c=>c.onclick=e=>{
+    const id=c.dataset.id, st=e.target.closest('.star');
+    if(st){ S.sel[id]=+st.dataset.s; }
+    else if(id in S.sel){ delete S.sel[id]; Object.keys(S.proof).forEach(k=>{if(S.proof[k]===id)S.proof[k]=''}); }
+    else S.sel[id]=0;
+    save(); renderTabs(); renderCards(); renderProofs();
+  });
+}
+function renderProofs(){
+  const sel=temas().filter(t=>t.id in S.sel);
+  const opts=v=>`<option value="">Elegí un tema que marcaste…</option>`+sel.map(t=>`<option value="${esc(t.id)}" ${v===t.id?'selected':''}>${t.em} ${esc(t.n)}</option>`).join('');
+  const ph=['Ej: Aprendí a usar bucles para que el robot repita pasos sin escribir todo de nuevo…','Ej: Entendí que lo que subo a internet queda guardado aunque lo borre, por eso…','Ej: Diseñé una pieza en Tinkercad juntando formas y restando huecos…'];
+  $('proofs').innerHTML=[0,1,2].map(i=>{
+    const len=(S.proofTxt[i]||'').trim().length;
+    return `<div class="proof"><h4>${['🥇','🥈','🥉'][i]} Tema fuerte #${i+1}</h4>
+      <select data-pi="${i}">${opts(S.proof[i])}</select>
+      <textarea data-pt="${i}" placeholder="${ph[i]}" style="margin-top:8px">${esc(S.proofTxt[i]||'')}</textarea>
+      <div class="charc ${len>=40?'ok':''}" id="cc${i}">${len}/40 caracteres mínimos</div></div>`;
+  }).join('');
+  $('proofs').querySelectorAll('select').forEach(s=>s.onchange=()=>{S.proof[s.dataset.pi]=s.value;save()});
+  $('proofs').querySelectorAll('textarea').forEach(t=>t.oninput=()=>{
+    const i=t.dataset.pt; S.proofTxt[i]=t.value; save();
+    const l=t.value.trim().length,c=$('cc'+i); c.textContent=l+'/40 caracteres mínimos'; c.classList.toggle('ok',l>=40);
+  });
+  const all=temas();
+  $('favorito').innerHTML=`<option value="">Elegí…</option>`+all.map(t=>`<option value="${esc(t.id)}" ${S.favorito===t.id?'selected':''}>${t.em} ${esc(t.n)}</option>`).join('');
+}
+$('favorito').onchange=e=>{S.favorito=e.target.value;save()};
+
+/* ===== CV ===== */
+document.querySelectorAll('.theme-dot').forEach(d=>d.onclick=()=>{
+  S.theme=d.dataset.t; save();
+  document.querySelectorAll('.theme-dot').forEach(x=>x.classList.toggle('sel',x===d));
+  $('cv').className='cv '+S.theme;
+});
+function badges(sel){
+  const by=a=>sel.filter(t=>t.a===a);
+  const b=[];
+  if(by('pyr').length>=5) b.push(['🤖','Maestro/a Robot']);
+  if(by('ia').length>=3) b.push(['🧠','Mente IA']);
+  if(by('ciu').length>=3) b.push(['🛡️','Guardián/a Digital']);
+  if(by('alf').length>=5) b.push(['💻','Ninja de la compu']);
+  if(by('mak').length>=2) b.push(['🔧','Maker Pro']);
+  if(sel.some(t=>t.n.startsWith('Tinkercad'))) b.push(['🧊','Diseñador/a 3D']);
+  if(sel.filter(t=>S.sel[t.id]===3).length>=5) b.push(['🎓','Profe en potencia']);
+  if(Object.keys(AREAS).every(a=>by(a).length)) b.push(['🌈','Todo terreno']);
+  if(S.refTexto.trim()) b.push(['🤝','Recomendado/a']);
+  if(sel.length>=15) b.push(['🏆','Coleccionista']);
+  return b;
+}
+function renderCV(){
+  const all=temas(), sel=all.filter(t=>t.id in S.sel);
+  const skills=Object.entries(AREAS).map(([k,a])=>{
+    const ts=all.filter(t=>t.a===k), pts=ts.reduce((s,t)=>s+(S.sel[t.id]||0),0);
+    return {a, p:Math.round(pts/(ts.length*3)*100)};
+  });
+  const fav=all.find(t=>t.id===S.favorito);
+  const proofs=[0,1,2].map(i=>({t:all.find(x=>x.id===S.proof[i]),txt:S.proofTxt[i]})).filter(p=>p.t);
+  const bd=badges(sel);
+  $('cv').className='cv '+(S.theme||'');
+  $('cv').innerHTML=`
+  <div class="cv-head">
+    <div class="cv-photo" style="${S.foto?`background-image:url(${S.foto})`:''}">${S.foto?'':'🙂'}</div>
+    <div>
+      <div class="cv-name">${esc(S.nombre)} ${esc(S.apellido)}</div>
+      ${S.apodo?`<div class="cv-nick">@${esc(S.apodo)}</div>`:''}
+      <div class="cv-role">${esc(S.rol)} · ${S.grado}° grado</div>
+      ${S.frase?`<div class="cv-quote">“${esc(S.frase)}”</div>`:''}
+    </div>
+  </div>
+  <div class="cv-body">
+    <aside class="cv-side">
+      <h3>⚡ Superpoder</h3><p>${esc(S.superpoder)}</p>
+      <h3>❤️ Me gusta</h3><div class="tagl">${S.hobbies.map(h=>`<span class="tag">${esc(h)}</span>`).join('')}</div>
+      <h3>📈 Habilidades</h3>
+      ${skills.map(s=>`<div class="skill"><div class="top"><span>${s.a.e} ${s.a.n}</span><b>${s.p}%</b></div><div class="tr"><div style="width:${s.p}%;background:${s.a.hex}"></div></div></div>`).join('')}
+      <h3>🏅 Insignias</h3>
+      <div class="badge-row">${bd.map(b=>`<div class="badge"><b>${b[0]}</b>${b[1]}</div>`).join('')||'<p>—</p>'}</div>
+      ${S.futuro?`<h3>🔮 Próximo nivel</h3><p>${esc(S.futuro)}</p>`:''}
+    </aside>
+    <main class="cv-main">
+      <h3>🏆 Lo que domino (y lo demuestro)</h3>
+      ${proofs.map(p=>`<div class="exp"><div class="h">${p.t.em} ${esc(p.t.n)} <span class="lv">${'⭐'.repeat(S.sel[p.t.id]||0)}</span></div><p>${esc(p.txt)}</p></div>`).join('')}
+      ${fav?`<h3>🌟 Mi clase favorita</h3><div class="exp"><div class="h">${fav.em} ${esc(fav.n)}</div><p>${esc(S.favPorque)}</p></div>`:''}
+      <h3>🧗 Un desafío que superé</h3><p style="color:var(--m);line-height:1.4">${esc(S.costo)}</p>
+      <h3>📚 Experiencia 2026</h3>
+      ${Object.entries(AREAS).map(([k,a])=>{
+        const ts=sel.filter(t=>t.a===k); if(!ts.length) return '';
+        return `<div class="area-block"><div class="an" style="color:${a.hex}">${a.e} ${a.n}</div><ul class="lst">${ts.map(t=>`<li>${t.em} ${esc(t.n)} ${'★'.repeat(S.sel[t.id]||0)}</li>`).join('')}</ul></div>`;
+      }).join('')}
+      ${S.refTexto.trim()?`<h3>🤝 Recomendación</h3><div class="ref">“${esc(S.refTexto)}”<br><b>— ${esc(S.refNombre||'Un compañero/a')}</b></div>`:''}
+    </main>
+  </div>
+  <div class="cv-foot">Tecnología, Diseño y Programación · Escuela Bereshit · 2026 · Prof. Nicolás Kane</div>`;
+}
+/* ===== ENVÍO A LA BASE DE DATOS ===== */
+function paintSend(){
+  const st=$('sendSt'), btn=$('sendBtn'); if(!st) return;
+  if(S.enviado){ st.className='send-st ok'; st.textContent='✅ Enviado el '+new Date(S.enviado).toLocaleString('es-AR')+'. ¡Tu profe ya lo tiene!'; btn.textContent='🔁 Enviar de nuevo (actualizado)'; }
+  else { st.className='send-st'; st.textContent=''; btn.textContent='📨 Enviar mi CV'; }
+}
+async function enviar(){
+  const st=$('sendSt'), btn=$('sendBtn'), C=window.CV_CONFIG||{};
+  if(!C.url||!C.key||/PEGAR/.test(C.url+C.key)){ st.className='send-st bad'; st.textContent='⚠️ El envío todavía no está configurado. Avisale a tu profe.'; return; }
+  btn.disabled=true; st.className='send-st'; st.textContent='⏳ Enviando…';
+  const {foto,...resto}=S;
+  const body={grado:+S.grado,nombre:S.nombre.trim(),apellido:S.apellido.trim(),rol:S.rol,theme:S.theme||'',cv_html:$('cv').innerHTML,data:resto};
+  try{
+    const r=await fetch(C.url+'/rest/v1/entregas',{method:'POST',headers:{apikey:C.key,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(body)});
+    if(!r.ok) throw new Error(r.status);
+    S.enviado=new Date().toISOString(); save(); paintSend(); confetti();
+  }catch(e){
+    st.className='send-st bad'; st.textContent='⚠️ No se pudo enviar. Revisá el wifi y probá de nuevo (tu CV sigue guardado).';
+  }
+  btn.disabled=false;
+}
+function confetti(){
+  const cols=['#e94560','#ffd700','#4cc9f0','#2ecc71','#b388ff'];
+  for(let i=0;i<70;i++){
+    const d=document.createElement('div');d.className='confetti';
+    d.style.left=Math.random()*100+'vw';d.style.background=cols[i%5];
+    d.style.animationDuration=(2+Math.random()*2)+'s';d.style.animationDelay=Math.random()*.6+'s';
+    document.body.appendChild(d);setTimeout(()=>d.remove(),5000);
+  }
+}
+
+/* ===== INIT ===== */
+load();
+['nombre','apellido','apodo','rol','superpoder','frase','favPorque','costo','futuro','refNombre','refTexto'].forEach(k=>$(k).value=S[k]||'');
+paintGrade(); paintPhoto(); renderHobbies(); renderSteps();
+document.querySelectorAll('.theme-dot').forEach(x=>x.classList.toggle('sel',x.dataset.t===(S.theme||'')));
+</script>
+</body>
+</html>

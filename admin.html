@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Panel del profe · CV Tech 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1a1a2e;--card:#16213e;--blue:#0f3460;--red:#e94560;--gold:#ffd700;--txt:#f4f4f8;--muted:#a9b0c7;--ok:#2ecc71}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Fredoka',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;font-size:17px}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 18px 60px}
+h1{font-size:26px;margin-bottom:14px;color:var(--gold)}
+input,select{padding:11px 14px;border-radius:12px;border:2px solid var(--blue);background:#0d1630;color:var(--txt);font:inherit}
+.btn{padding:11px 18px;border-radius:12px;border:none;font:inherit;font-weight:700;cursor:pointer;background:var(--red);color:#fff}
+.btn.g{background:transparent;border:2px solid var(--blue);color:var(--txt)}
+.btn.y{background:var(--gold);color:#1a1a2e}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.msg{color:#ffb3c0;margin:8px 0}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:14px;overflow:hidden}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--blue)}
+th{color:var(--muted);font-size:14px}
+td .btn{padding:6px 12px;font-size:15px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;z-index:50;padding:14px;flex-direction:column;gap:10px}
+.modal.show{display:flex}
+.modal iframe{flex:1;border:0;border-radius:14px;background:#fff;width:100%}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📬 Panel del profe</h1>
+  <div id="login" class="row">
+    <input type="password" id="clave" placeholder="Tu clave de profe" autocomplete="current-password">
+    <button class="btn y" onclick="cargar()">Entrar</button>
+  </div>
+  <div class="msg" id="msg"></div>
+  <div id="panel" style="display:none">
+    <div class="row">
+      <select id="fGrado" onchange="pintar()"><option value="">Todos los grados</option><option>5</option><option>6</option><option>7</option></select>
+      <input id="fBuscar" placeholder="Buscar alumno…" oninput="pintar()">
+      <label><input type="checkbox" id="fUlt" checked onchange="pintar()"> Solo la última entrega de cada alumno</label>
+      <span style="flex:1"></span>
+      <button class="btn g" onclick="cargar()">🔄 Actualizar</button>
+      <button class="btn g" onclick="bajar()">💾 Bajar todo (JSON)</button>
+    </div>
+    <div id="count" style="color:var(--muted);margin-bottom:8px"></div>
+    <table><thead><tr><th>Alumno</th><th>Grado</th><th>Puesto</th><th>Enviado</th><th></th></tr></thead><tbody id="rows"></tbody></table>
+  </div>
+</div>
+<div class="modal" id="modal">
+  <div class="row" style="margin:0"><button class="btn g" onclick="cerrar()">✖ Cerrar</button><button class="btn y" onclick="imprimir()">🖨️ Imprimir / PDF</button></div>
+  <iframe id="frame" sandbox="allow-modals allow-same-origin"></iframe>
+</div>
+<script src="config.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let clave='', datos=[];
+async function rpc(fn,args){
+  const C=CV_CONFIG;
+  const r=await fetch(C.url+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:C.key,'Content-Type':'application/json'},body:JSON.stringify(args)});
+  if(!r.ok) throw new Error(r.status===400?'Clave incorrecta':'Error '+r.status);
+  return r.json();
+}
+async function cargar(){
+  $('msg').textContent='';
+  if(!clave) clave=$('clave').value;
+  try{
+    datos=await rpc('admin_listar',{p_clave:clave});
+    $('login').style.display='none'; $('panel').style.display='block'; pintar();
+  }catch(e){ clave=''; $('msg').textContent='⚠️ '+e.message; }
+}
+$('clave').addEventListener('keydown',e=>{if(e.key==='Enter')cargar()});
+function pintar(){
+  const g=$('fGrado').value, q=$('fBuscar').value.toLowerCase(), ult=$('fUlt').checked, vistos=new Set();
+  let l=datos.filter(d=>(!g||String(d.grado)===g)&&(d.nombre+' '+d.apellido).toLowerCase().includes(q));
+  if(ult) l=l.filter(d=>{const k=d.grado+d.nombre.trim().toLowerCase()+d.apellido.trim().toLowerCase();if(vistos.has(k))return false;vistos.add(k);return true});
+  l.sort((a,b)=>a.grado-b.grado||a.apellido.localeCompare(b.apellido));
+  $('count').textContent=l.length+' entrega(s)';
+  $('rows').innerHTML=l.map(d=>`<tr><td><b>${esc(d.apellido)}, ${esc(d.nombre)}</b></td><td>${d.grado}°</td><td>${esc(d.rol)}</td><td>${new Date(d.created_at).toLocaleString('es-AR')}</td><td style="white-space:nowrap"><button class="btn" onclick="ver('${d.id}')">👁️ Ver</button> <button class="btn g" onclick="borrar('${d.id}')">🗑️</button></td></tr>`).join('')||'<tr><td colspan="5">Todavía no hay entregas.</td></tr>';
+}
+function ver(id){
+  const d=datos.find(x=>x.id===id);
+  // El CV va en un iframe sin scripts: aunque un alumno mande HTML raro, no se ejecuta nada.
+  $('frame').srcdoc=`<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="${new URL('cv.css',location.href).href}"><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet"><style>body{margin:0;font-family:'Fredoka',sans-serif}.cv{-webkit-print-color-adjust:exact;print-color-adjust:exact}.cv-body{display:grid;grid-template-columns:300px 1fr}@media print{.cv{border-radius:0}.cv-body{grid-template-columns:260px 1fr}}</style></head><body><div class="cv ${esc((d.theme||'').replace(/[^a-z-]/g,''))}">${d.cv_html}</div></body></html>`;
+  $('modal').classList.add('show');
+}
+function cerrar(){ $('modal').classList.remove('show'); $('frame').srcdoc=''; }
+function imprimir(){ $('frame').contentWindow.print(); }
+async function borrar(id){
+  if(!confirm('¿Borrar esta entrega? No se puede deshacer.')) return;
+  try{ await rpc('admin_borrar',{p_clave:clave,p_id:id}); datos=datos.filter(d=>d.id!==id); pintar(); }catch(e){ alert(e.message); }
+}
+function bajar(){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(datos.map(({cv_html,...r})=>r),null,1)],{type:'application/json'}));
+  a.download='entregas-cv-tech-2026.json'; a.click();
+}
+</script>
+</body>
+</html>
