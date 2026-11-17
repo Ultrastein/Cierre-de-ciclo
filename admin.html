@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>Panel del profe · CV Tech 2026</title>
+<title>Panel del profe · Álbum de Logros 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#1a1a2e;--card:#16213e;--blue:#0f3460;--red:#e94560;--gold:#ffd700;--txt:#f4f4f8;--muted:#a9b0c7;--ok:#2ecc71}
@@ -82,7 +82,7 @@ function pintar(){
 }
 function ver(id){
   const d=datos.find(x=>x.id===id);
-  // El CV va en un iframe sin scripts: aunque un alumno mande HTML raro, no se ejecuta nada.
+  // El álbum va en un iframe sin scripts: aunque un alumno mande HTML raro, no se ejecuta nada.
   $('frame').srcdoc=`<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="${new URL('cv.css',location.href).href}"><link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet"><style>body{margin:0;font-family:'Nunito',sans-serif}.cv{-webkit-print-color-adjust:exact;print-color-adjust:exact}.cv-body{display:grid;grid-template-columns:300px 1fr}@media print{.cv{border-radius:0}.cv-body{grid-template-columns:260px 1fr}}</style></head><body><div class="cv ${esc((d.theme||'').replace(/[^a-z-]/g,''))}">${d.cv_html}</div></body></html>`;
   $('modal').classList.add('show');
 }

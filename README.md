@@ -1,6 +1,6 @@
-# Armá tu CV Tech 2026 · Escuela Bereshit
+# Mi Álbum de Logros 2026 · Escuela Bereshit
 
-App para que los alumnos de 5°, 6° y 7° armen su CV tech y se lo envíen al profe sin cuentas ni mail.
+App para que los alumnos de 5°, 6° y 7° armen su álbum de logros tech y se lo envíen al profe sin cuentas ni mail.
 
 - `index.html`: la app de los alumnos.
 - `admin.html`: panel del profe (pide clave). Ver, imprimir, borrar y bajar entregas.
