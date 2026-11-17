@@ -520,7 +520,7 @@ function validate(n){
     else if(faltan.length) msg='Te falta marcar al menos un tema de: '+faltan.join(', ')+'.';
     else if(sel.some(t=>!S.sel[t.id])) msg='Poné estrellas a todos los temas marcados.';
     else if(pr.length<3||new Set(pr).size<3) msg='En "Demostralo" elegí 3 temas distintos.';
-    else if([0,1,2].some(i=>(S.proofTxt[i]||'').trim().length<40)) msg='Cada explicación de "Demostralo" tiene que tener al menos 40 caracteres. ¡Contá bien qué aprendiste!';
+    else if([0,1,2].some(i=>(S.proofTxt[i]||'').trim().length<20)) msg='Cada explicación de "Demostralo" tiene que tener al menos 20 caracteres. ¡Contá bien qué aprendiste!';
     else if(!S.favorito) msg='Elegí tu clase o proyecto favorito.';
     else if(S.costo.trim().length<20) msg='Contanos algo que te costó y cómo lo resolviste.';
   }
@@ -659,12 +659,12 @@ function renderProofs(){
     return `<div class="proof"><h4>${['🥇','🥈','🥉'][i]} Tema fuerte #${i+1}</h4>
       <select data-pi="${i}">${opts(S.proof[i])}</select>
       <textarea data-pt="${i}" placeholder="${ph[i]}" style="margin-top:8px">${esc(S.proofTxt[i]||'')}</textarea>
-      <div class="charc ${len>=40?'ok':''}" id="cc${i}">${len}/40 caracteres mínimos</div></div>`;
+      <div class="charc ${len>=20?'ok':''}" id="cc${i}">${len}/20 caracteres mínimos</div></div>`;
   }).join('');
   $('proofs').querySelectorAll('select').forEach(s=>s.onchange=()=>{S.proof[s.dataset.pi]=s.value;save()});
   $('proofs').querySelectorAll('textarea').forEach(t=>t.oninput=()=>{
     const i=t.dataset.pt; S.proofTxt[i]=t.value; save();
-    const l=t.value.trim().length,c=$('cc'+i); c.textContent=l+'/40 caracteres mínimos'; c.classList.toggle('ok',l>=40);
+    const l=t.value.trim().length,c=$('cc'+i); c.textContent=l+'/20 caracteres mínimos'; c.classList.toggle('ok',l>=20);
   });
   const all=temas();
   $('favorito').innerHTML=`<option value="">Elegí…</option>`+all.map(t=>`<option value="${esc(t.id)}" ${S.favorito===t.id?'selected':''}>${t.em} ${esc(t.n)}</option>`).join('');
