@@ -25,6 +25,13 @@ td .btn{padding:6px 12px;font-size:15px}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;z-index:50;padding:14px;flex-direction:column;gap:10px}
 .modal.show{display:flex}
 .modal iframe{flex:1;border:0;border-radius:14px;background:#fff;width:100%}
+.thumb{width:54px;height:54px;border-radius:12px;object-fit:cover;border:2px solid var(--blue);background:#0d1630;display:block}
+img.thumb{cursor:zoom-in;transition:transform .12s}
+img.thumb:hover,img.thumb:focus{transform:scale(1.08);border-color:var(--gold);outline:none}
+td.tf{width:74px;padding-right:0}
+#zoom{z-index:60;background:rgba(0,0,0,.92)}
+#zbox{flex:1;overflow:auto;display:flex;border-radius:14px;cursor:zoom-out}
+#zimg{margin:auto;display:block;border-radius:14px;max-width:none;cursor:default}
 </style>
 </head>
 <body>
@@ -45,12 +52,21 @@ td .btn{padding:6px 12px;font-size:15px}
       <button class="btn g" onclick="bajar()">💾 Bajar todo (JSON)</button>
     </div>
     <div id="count" style="color:var(--muted);margin-bottom:8px"></div>
-    <table><thead><tr><th>Alumno</th><th>Grado</th><th>Puesto</th><th>Enviado</th><th></th></tr></thead><tbody id="rows"></tbody></table>
+    <table><thead><tr><th></th><th>Alumno</th><th>Grado</th><th>Puesto</th><th>Enviado</th><th></th></tr></thead><tbody id="rows"></tbody></table>
   </div>
 </div>
 <div class="modal" id="modal">
   <div class="row" style="margin:0"><button class="btn g" onclick="cerrar()">✖ Cerrar</button><button class="btn y" onclick="imprimir()">🖨️ Imprimir / PDF</button></div>
   <iframe id="frame" sandbox="allow-modals allow-same-origin"></iframe>
+</div>
+<div class="modal" id="zoom">
+  <div class="row" style="margin:0">
+    <button class="btn g" onclick="cerrarZoom()">✖ Cerrar</button>
+    <button class="btn g" onclick="zoomPaso(-0.5)" aria-label="Alejar">➖</button>
+    <button class="btn g" onclick="zoomPaso(0.5)" aria-label="Acercar">➕</button>
+    <span id="zname" style="color:var(--muted)"></span>
+  </div>
+  <div id="zbox"><img id="zimg" alt=""></div>
 </div>
 <script src="config.js"></script>
 <script>
@@ -78,8 +94,41 @@ function pintar(){
   if(ult) l=l.filter(d=>{const k=d.grado+d.nombre.trim().toLowerCase()+d.apellido.trim().toLowerCase();if(vistos.has(k))return false;vistos.add(k);return true});
   l.sort((a,b)=>a.grado-b.grado||a.apellido.localeCompare(b.apellido));
   $('count').textContent=l.length+' entrega(s)';
-  $('rows').innerHTML=l.map(d=>`<tr><td><b>${esc(d.apellido)}, ${esc(d.nombre)}</b></td><td>${d.grado}°</td><td>${esc(d.rol)}</td><td>${new Date(d.created_at).toLocaleString('es-AR')}</td><td style="white-space:nowrap"><button class="btn" onclick="ver('${d.id}')">👁️ Ver</button> <button class="btn g" onclick="borrar('${d.id}')">🗑️</button></td></tr>`).join('')||'<tr><td colspan="5">Todavía no hay entregas.</td></tr>';
+  $('rows').innerHTML=l.map(d=>`<tr><td class="tf">${thumb(d)}</td><td><b>${esc(d.apellido)}, ${esc(d.nombre)}</b></td><td>${d.grado}°</td><td>${esc(d.rol)}</td><td>${new Date(d.created_at).toLocaleString('es-AR')}</td><td style="white-space:nowrap"><button class="btn" onclick="ver('${d.id}')">👁️ Ver</button> <button class="btn g" onclick="borrar('${d.id}')">🗑️</button></td></tr>`).join('')||'<tr><td colspan="6">Todavía no hay entregas.</td></tr>';
 }
+/* ===== Fotos: miniatura + zoom solo de la foto ===== */
+function fotoDe(d){
+  if(d._foto!==undefined) return d._foto;
+  let f='';
+  try{
+    // DOMParser no ejecuta nada; solo aceptamos una imagen base64 de tipo conocido.
+    const doc=new DOMParser().parseFromString('<div>'+d.cv_html+'</div>','text/html');
+    const el=doc.querySelector('.cv-photo');
+    const m=el&&/url\(["']?(data:image\/(?:jpeg|png|webp|gif);base64,[A-Za-z0-9+\/=]+)["']?\)/.exec(el.getAttribute('style')||'');
+    f=m?m[1]:'';
+  }catch(e){}
+  return d._foto=f;
+}
+function thumb(d){
+  const f=fotoDe(d);
+  return f?`<img class="thumb" src="${f}" alt="Foto de ${esc(d.nombre)}" title="Tocá para ampliar" tabindex="0" role="button" onclick="zoomFoto('${d.id}')" onkeydown="if(event.key==='Enter')zoomFoto('${d.id}')">`:'<div class="thumb" title="Sin foto"></div>';
+}
+let zNivel=1;
+function zoomAplicar(){
+  const lado=Math.min(innerWidth,innerHeight)*0.8*zNivel;
+  $('zimg').style.width=lado+'px'; $('zimg').style.height=lado+'px'; $('zimg').style.objectFit='contain';
+}
+function zoomPaso(p){ zNivel=Math.min(5,Math.max(0.5,zNivel+p)); zoomAplicar(); }
+function zoomFoto(id){
+  const d=datos.find(x=>x.id===id); if(!d||!fotoDe(d)) return;
+  zNivel=1; $('zimg').src=fotoDe(d); $('zimg').alt='Foto de '+d.nombre;
+  $('zname').textContent=d.nombre+' '+d.apellido+' · '+d.grado+'°';
+  zoomAplicar(); $('zoom').classList.add('show'); $('zbox').scrollTo(0,0);
+}
+function cerrarZoom(){ $('zoom').classList.remove('show'); $('zimg').removeAttribute('src'); }
+$('zbox').addEventListener('click',e=>{ if(e.target===$('zbox')) cerrarZoom(); });
+$('zbox').addEventListener('wheel',e=>{ e.preventDefault(); zoomPaso(e.deltaY<0?0.25:-0.25); },{passive:false});
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if($('zoom').classList.contains('show')) cerrarZoom(); else if($('modal').classList.contains('show')) cerrar(); } });
 function ver(id){
   const d=datos.find(x=>x.id===id);
   // El álbum va en un iframe sin scripts: aunque un alumno mande HTML raro, no se ejecuta nada.
@@ -94,7 +143,7 @@ async function borrar(id){
 }
 function bajar(){
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([JSON.stringify(datos.map(({cv_html,...r})=>r),null,1)],{type:'application/json'}));
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(datos.map(({cv_html,_foto,...r})=>r),null,1)],{type:'application/json'}));
   a.download='entregas-cv-tech-2026.json'; a.click();
 }
 </script>
