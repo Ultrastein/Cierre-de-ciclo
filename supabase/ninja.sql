@@ -9,7 +9,9 @@ create table if not exists public.ninja_resultados (
   apellido text not null check (char_length(apellido) between 1 and 60),
   cinturon text not null check (char_length(cinturon) <= 30),
   porcentaje smallint not null check (porcentaje between 0 and 100),
-  respuestas jsonb not null check (pg_column_size(respuestas) <= 20000)
+  respuestas jsonb not null check (pg_column_size(respuestas) <= 20000),
+  cv_html text check (cv_html is null or char_length(cv_html) <= 900000),  -- CV del alumno (opcional)
+  theme text check (theme is null or char_length(theme) <= 20)
 );
 
 alter table public.ninja_resultados enable row level security;
