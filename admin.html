@@ -63,6 +63,7 @@ td.tf{width:74px;padding-right:0}
     <div class="row" id="vistas">
       <button class="btn y" id="vEnt" onclick="vista('ent')">📋 Entregas</button>
       <button class="btn g" id="vSt" onclick="vista('st')">📊 Estadísticas del año</button>
+      <button class="btn g" id="vNj" onclick="vista('nj')">🥷 Desafío Ninja Digital</button>
     </div>
     <div id="ent">
     <div class="row">
@@ -75,6 +76,10 @@ td.tf{width:74px;padding-right:0}
     </div>
     <div id="count" style="color:var(--muted);margin-bottom:8px"></div>
     <table><thead><tr><th></th><th>Alumno</th><th>Grado</th><th>Puesto</th><th>Enviado</th><th></th></tr></thead><tbody id="rows"></tbody></table>
+    </div>
+    <div id="nj" style="display:none">
+      <div class="row" id="njGrados"></div>
+      <div id="njBody"></div>
     </div>
     <div id="st" style="display:none">
       <div class="row" id="stGrados"></div>
@@ -97,6 +102,7 @@ td.tf{width:74px;padding-right:0}
 </div>
 <script src="config.js"></script>
 <script src="catalogo.js"></script>
+<script src="ninja-preguntas.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -172,9 +178,64 @@ async function borrar(id){
 /* ===== ESTADÍSTICAS DEL AÑO (para planificar) ===== */
 let stG='todos', ST=null;
 function vista(v){
-  $('ent').style.display=v==='ent'?'':'none'; $('st').style.display=v==='st'?'':'none';
-  $('vEnt').className='btn '+(v==='ent'?'y':'g'); $('vSt').className='btn '+(v==='st'?'y':'g');
+  $('ent').style.display=v==='ent'?'':'none'; $('st').style.display=v==='st'?'':'none'; $('nj').style.display=v==='nj'?'':'none';
+  $('vEnt').className='btn '+(v==='ent'?'y':'g'); $('vSt').className='btn '+(v==='st'?'y':'g'); $('vNj').className='btn '+(v==='nj'?'y':'g');
   if(v==='st') stats();
+  if(v==='nj') cargarNinja();
+}
+
+/* ===== DESAFÍO NINJA DIGITAL ===== */
+let njDatos=[], njG='todos', njOrden=[];
+async function cargarNinja(){
+  $('njBody').innerHTML='<p class="muted">Cargando…</p>';
+  try{ njDatos=await rpc('admin_listar_ninja',{p_clave:clave}); pintarNinja(); }
+  catch(e){ $('njBody').innerHTML='<p class="muted">⚠️ '+esc(e.message)+'</p>'; }
+}
+function setNjG(g){ njG=g; pintarNinja(); }
+function pintarNinja(){
+  const v=new Set(), ult=[];
+  for(const d of njDatos){ const k=d.grado+'|'+d.nombre.trim().toLowerCase()+'|'+d.apellido.trim().toLowerCase(); if(v.has(k)) continue; v.add(k); ult.push(d); }
+  const al=ult.filter(d=>njG==='todos'||String(d.grado)===njG).sort((a,b)=>a.grado-b.grado||a.apellido.localeCompare(b.apellido));
+  njOrden=al;
+  $('njGrados').innerHTML=['todos','5','6','7'].map(g=>`<button class="btn ${g===njG?'y':'g'}" onclick="setNjG('${g}')">${g==='todos'?'Todos los grados':g+'° grado'}</button>`).join('')+'<span style="flex:1"></span><button class="btn g" onclick="csvNinja()">📄 Bajar CSV</button><button class="btn g" onclick="window.print()">🖨️ Imprimir</button><button class="btn g" onclick="cargarNinja()">🔄 Actualizar</button>';
+  if(!al.length){ $('njBody').innerHTML='<p class="muted">Todavía no hay resultados del desafío Ninja en este grado.</p>'; return; }
+  const prom=Math.round(al.reduce((s,d)=>s+d.porcentaje,0)/al.length);
+  const cint={}; al.forEach(d=>cint[d.cinturon]=(cint[d.cinturon]||0)+1);
+  const pBloque=b=>{ const ps=NINJA_PREGUNTAS.filter(p=>p.b===b); return d=>{ const r=ps.filter(p=>p.id in (d.respuestas||{})); return r.length?Math.round(r.filter(p=>d.respuestas[p.id]===1).length*100/r.length):null; }; };
+  // por pregunta
+  const porP=NINJA_PREGUNTAS.map(p=>{ let n=0,ok=0; al.forEach(d=>{ if(p.id in (d.respuestas||{})){ n++; if(d.respuestas[p.id]===1) ok++; } }); return {...p,n,ok,pct:n?ok*100/n:null}; });
+  const dificiles=porP.filter(p=>p.n>=2&&p.pct<60).sort((a,b)=>a.pct-b.pct).slice(0,12);
+  const porB=NINJA_BLOQUES.map((B,i)=>{ const f=pBloque(i); const v=al.map(f).filter(x=>x!=null); return {B,n:v.length,pct:v.length?Math.round(v.reduce((s,x)=>s+x,0)/v.length):null}; });
+  const celda=x=>x==null?'<span class="who">—</span>':x+'%';
+  $('njBody').innerHTML=`
+  <div class="sgrid">
+    <div class="kpi"><b>${al.length}</b>alumnos que jugaron</div>
+    <div class="kpi"><b>${prom}%</b>promedio de aciertos a la primera</div>
+    <div class="kpi"><b>${dificiles.length}</b>preguntas para repasar</div>
+  </div>
+  <p class="hint2">Se cuenta la última entrega de cada alumno. “Acierto” = respondió bien a la primera. Cinturones: ${Object.entries(cint).map(([k,v])=>esc(k)+' ('+v+')').join(' · ')}.</p>
+
+  <h3 class="sec">🎯 Por bloque</h3>
+  <table><thead><tr><th>Bloque</th><th>Alumnos</th><th>Aciertos</th></tr></thead><tbody>${porB.map(x=>`<tr><td>${x.B.e} ${x.B.n}</td><td>${x.n}</td><td>${celda(x.pct)}${x.pct!=null?barra(x.pct/100,x.B.c):''}</td></tr>`).join('')}</tbody></table>
+
+  <h3 class="sec">📌 Preguntas que más costaron (para repasar en clase)</h3>
+  <div class="box"><ul>${dificiles.map(p=>`<li><span class="tag2 t-ref">${Math.round(p.pct)}%</span> <b>${esc(p.q)}</b> <span class="who">${NINJA_BLOQUES[p.b].e} ${esc(p.t)} · ${p.ok}/${p.n} acertaron</span><div class="who">Respuesta: ${esc(p.o[0])}</div></li>`).join('')||'<li class="muted">Ninguna por debajo del 60% (con al menos 2 respuestas).</li>'}</ul></div>
+
+  <h3 class="sec">👥 Alumnos</h3>
+  <table><thead><tr><th>Alumno</th><th>Grado</th><th>Cinturón</th><th>Total</th>${NINJA_BLOQUES.map(B=>`<th title="${esc(B.n)}">${B.e}</th>`).join('')}<th>Enviado</th><th></th></tr></thead><tbody>${al.map(d=>`<tr><td><b>${esc(d.apellido)}, ${esc(d.nombre)}</b></td><td>${d.grado}°</td><td>${esc(d.cinturon)}</td><td><b>${d.porcentaje}%</b></td>${NINJA_BLOQUES.map((B,i)=>`<td>${celda(pBloque(i)(d))}</td>`).join('')}<td class="who">${new Date(d.created_at).toLocaleString('es-AR')}</td><td><button class="btn g" onclick="borrarNinja('${d.id}')" aria-label="Borrar">🗑️</button></td></tr>`).join('')}</tbody></table>
+  <p class="hint2">Columnas por bloque: ${NINJA_BLOQUES.map(B=>B.e+' '+B.n).join(' · ')}.</p>`;
+}
+async function borrarNinja(id){
+  if(!confirm('¿Borrar este resultado? No se puede deshacer.')) return;
+  try{ await rpc('admin_borrar_ninja',{p_clave:clave,p_id:id}); njDatos=njDatos.filter(d=>d.id!==id); pintarNinja(); }catch(e){ alert(e.message); }
+}
+function csvNinja(){
+  const q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+  const f=[['Apellido','Nombre','Grado','Cinturon','% total',...NINJA_BLOQUES.map(B=>'% '+B.n),'Enviado'].map(q).join(',')];
+  njOrden.forEach(d=>f.push([q(d.apellido),q(d.nombre),d.grado,q(d.cinturon),d.porcentaje,...NINJA_BLOQUES.map((B,i)=>{const ps=NINJA_PREGUNTAS.filter(p=>p.b===i).filter(p=>p.id in (d.respuestas||{}));return ps.length?Math.round(ps.filter(p=>d.respuestas[p.id]===1).length*100/ps.length):'';}),q(d.created_at)].join(',')));
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['﻿'+f.join('\r\n')],{type:'text/csv;charset=utf-8'}));
+  a.download='ninja-digital-'+njG+'-2026.csv'; a.click();
 }
 function setG(g){ stG=g; stats(); }
 function ultimas(){
