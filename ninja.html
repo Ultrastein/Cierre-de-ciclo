@@ -93,10 +93,6 @@ input[type=text]:focus{border-color:var(--red);box-shadow:3px 3px 0 var(--ink)}
       <div><label class="lbl" for="nombre">Nombre</label><input type="text" id="nombre" placeholder="Ej: Sofía" autocomplete="off"></div>
       <div><label class="lbl" for="apellido">Apellido</label><input type="text" id="apellido" placeholder="Ej: Pérez" autocomplete="off"></div>
     </div>
-    <label class="lbl">¿En qué grado estás?</label>
-    <div class="grades">
-      <button class="gbtn" data-g="5">5°</button><button class="gbtn" data-g="6">6°</button><button class="gbtn" data-g="7">7°</button>
-    </div>
     <div class="err" id="e1"></div>
     <div class="nav"><span></span><button class="btn" onclick="empezar()">¡Empezar! ➜</button></div>
   </section>
@@ -142,7 +138,7 @@ input[type=text]:focus{border-color:var(--red);box-shadow:3px 3px 0 var(--ink)}
 <script>
 const $=id=>document.getElementById(id);
 const KEY='ninja2026';
-let S={nombre:'',apellido:'',grado:'',res:{},enviado:''};  // res: {idPregunta: 1 (bien a la primera) | 0}
+let S={nombre:'',apellido:'',res:{},enviado:''};  // res: {idPregunta: 1 (bien a la primera) | 0}
 let cur={b:0,lista:[],i:0,practica:false,respondida:false};
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d)S={...S,...d}}catch(e){}}
@@ -157,12 +153,10 @@ function irA(n){
 function empezar(){
   S.nombre=$('nombre').value.trim(); S.apellido=$('apellido').value.trim();
   const e=$('e1'); let m='';
-  if(!S.nombre||!S.apellido) m='Completá tu nombre y apellido.'; else if(!S.grado) m='Elegí tu grado.';
+  if(!S.nombre||!S.apellido) m='Completá tu nombre y apellido.';
   e.style.display=m?'block':'none'; e.textContent=m?'⚠️ '+m:'';
   if(m) return; save(); irA(2);
 }
-document.querySelectorAll('.gbtn').forEach(b=>b.onclick=()=>{S.grado=b.dataset.g; pintarGrado(); save();});
-function pintarGrado(){document.querySelectorAll('.gbtn').forEach(b=>b.classList.toggle('sel',b.dataset.g===S.grado))}
 
 /* ===== puntajes y cinturon ===== */
 function statsBloque(b){
@@ -244,7 +238,7 @@ async function enviar(){
   if(!C.url||!C.key||/PEGAR/.test(C.url+C.key)){ st.className='st bad'; st.textContent='⚠️ El envío todavía no está configurado. Avisale a tu profe.'; return; }
   btn.disabled=true; st.className='st'; st.textContent='⏳ Enviando…';
   const p=pctTotal();
-  const body={grado:+S.grado,nombre:S.nombre,apellido:S.apellido,cinturon:cinturon(p).n,porcentaje:p,respuestas:S.res};
+  const body={nombre:S.nombre,apellido:S.apellido,cinturon:cinturon(p).n,porcentaje:p,respuestas:S.res};
   try{
     const r=await fetch(C.url+'/rest/v1/ninja_resultados',{method:'POST',headers:{apikey:C.key,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(body)});
     if(!r.ok) throw new Error(r.status);
@@ -262,8 +256,8 @@ function mini(){
 }
 
 /* ===== inicio ===== */
-load(); $('nombre').value=S.nombre; $('apellido').value=S.apellido; pintarGrado();
-if(S.nombre&&S.apellido&&S.grado) irA(2);
+load(); $('nombre').value=S.nombre; $('apellido').value=S.apellido;
+if(S.nombre&&S.apellido) irA(2);
 </script>
 </body>
 </html>

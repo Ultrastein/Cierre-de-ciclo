@@ -4,7 +4,7 @@
 create table if not exists public.ninja_resultados (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
-  grado smallint not null check (grado between 5 and 7),
+  grado smallint check (grado between 5 and 7),  -- opcional: el desafio Ninja no pide grado
   nombre text not null check (char_length(nombre) between 1 and 60),
   apellido text not null check (char_length(apellido) between 1 and 60),
   cinturon text not null check (char_length(cinturon) <= 30),
