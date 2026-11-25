@@ -101,6 +101,7 @@ td.tf{width:74px;padding-right:0}
   <div id="zbox"><img id="zimg" alt=""></div>
 </div>
 <script src="config.js"></script>
+<script src="imprimir.js"></script>
 <script src="catalogo.js"></script>
 <script src="ninja-preguntas.js"></script>
 <script>
@@ -171,7 +172,7 @@ function ver(id){
   $('modal').classList.add('show');
 }
 function cerrar(){ $('modal').classList.remove('show'); $('frame').srcdoc=''; }
-function imprimir(){ $('frame').contentWindow.print(); }
+function imprimir(){ imprimirSeguro($('frame').contentWindow); }
 async function borrar(id){
   if(!confirm('¿Borrar esta entrega? No se puede deshacer.')) return;
   try{ await rpc('admin_borrar',{p_clave:clave,p_id:id}); datos=datos.filter(d=>d.id!==id); pintar(); }catch(e){ alert(e.message); }
@@ -198,7 +199,7 @@ function pintarNinja(){
   for(const d of njDatos){ const k=d.nombre.trim().toLowerCase()+'|'+d.apellido.trim().toLowerCase(); if(v.has(k)) continue; v.add(k); ult.push(d); }
   const al=ult.sort((a,b)=>a.apellido.localeCompare(b.apellido)||a.nombre.localeCompare(b.nombre));
   njOrden=al;
-  $('njGrados').innerHTML='<span style="flex:1"></span><button class="btn g" onclick="csvNinja()">📄 Bajar CSV</button><button class="btn g" onclick="window.print()">🖨️ Imprimir</button><button class="btn g" onclick="cargarNinja()">🔄 Actualizar</button>';
+  $('njGrados').innerHTML='<span style="flex:1"></span><button class="btn g" onclick="csvNinja()">📄 Bajar CSV</button><button class="btn g" onclick="imprimirSeguro()">🖨️ Imprimir</button><button class="btn g" onclick="cargarNinja()">🔄 Actualizar</button>';
   if(!al.length){ $('njBody').innerHTML='<p class="muted">Todavía no hay resultados del desafío Ninja.</p>'; return; }
   const prom=Math.round(al.reduce((s,d)=>s+d.porcentaje,0)/al.length);
   const cint={}; al.forEach(d=>cint[d.cinturon]=(cint[d.cinturon]||0)+1);
@@ -274,7 +275,7 @@ function estr(v){ return v==null?'—':v.toFixed(1)+' ★'; }
 function barra(p,c){ return `<div class="tbar"><div style="width:${Math.round(p*100)}%;background:${c}"></div></div>`; }
 function stats(){
   const gs=['5','6','7'];
-  $('stGrados').innerHTML=['todos',...gs].map(g=>`<button class="btn ${g===stG?'y':'g'}" onclick="setG('${g}')">${g==='todos'?'Todos los grados':g+'° grado'}</button>`).join('')+'<span style="flex:1"></span><button class="btn g" onclick="csvStats()">📄 Bajar CSV</button><button class="btn g" onclick="window.print()">🖨️ Imprimir</button>';
+  $('stGrados').innerHTML=['todos',...gs].map(g=>`<button class="btn ${g===stG?'y':'g'}" onclick="setG('${g}')">${g==='todos'?'Todos los grados':g+'° grado'}</button>`).join('')+'<span style="flex:1"></span><button class="btn g" onclick="csvStats()">📄 Bajar CSV</button><button class="btn g" onclick="imprimirSeguro()">🖨️ Imprimir</button>';
   const al=ultimas().filter(d=>stG==='todos'||String(d.grado)===stG);
   if(!al.length){ ST=null; $('stBody').innerHTML='<p class="muted">Todavía no hay entregas en este grado.</p>'; return; }
   ST=calc(al); pintarStats();

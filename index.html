@@ -380,7 +380,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--red);box-shadow:3px 3
       <div class="theme-dot" data-t="t-selva" style="background:linear-gradient(135deg,#2ecc71,#0b2b1f)" title="Selva"></div>
       <span style="flex:1"></span>
       <button class="btn btn-ghost" onclick="go(3)">✏️ Editar</button>
-      <button class="btn btn-gold" onclick="window.print()">🖨️ Guardar PDF</button>
+      <button class="btn btn-gold" onclick="imprimirSeguro()">🖨️ Guardar PDF</button>
     </div>
     <div class="send-box no-print" id="sendBox">
       <div>
@@ -416,6 +416,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--red);box-shadow:3px 3
 </div>
 
 <script src="config.js"></script>
+<script src="imprimir.js"></script>
 <script src="catalogo.js"></script>
 <script>
 const HOBBIES = ['⚽ Fútbol','🏀 Básquet','🎮 Videojuegos','🎨 Dibujar','🎵 Música','📚 Leer','🧱 Lego','💃 Bailar','🍳 Cocinar','🏊 Natación','🎬 Ver series','📷 Fotos y videos','🐶 Animales','🧩 Juegos de ingenio','🎸 Tocar un instrumento','🏕️ Aire libre','✂️ Manualidades','🎭 Teatro'];

@@ -190,7 +190,7 @@ textarea:focus{border-color:var(--red);box-shadow:3px 3px 0 var(--ink)}
       <div class="theme-dot" data-t="t-selva" style="background:linear-gradient(135deg,#2ecc71,#0b2b1f)" title="Selva"></div>
       <span style="flex:1"></span>
       <button class="btn w" onclick="irA(5)">✏️ Editar</button>
-      <button class="btn g" onclick="window.print()">🖨️ Guardar PDF</button>
+      <button class="btn g" onclick="imprimirSeguro()">🖨️ Guardar PDF</button>
     </div>
     <div class="send no-print" style="margin:0 0 18px">
       <div><b class="lil" style="font-size:22px">📨 ¿Listo? ¡Mandáselo a tu profe!</b>
@@ -233,6 +233,7 @@ textarea:focus{border-color:var(--red);box-shadow:3px 3px 0 var(--ink)}
   </div>
 </div>
 <script src="config.js"></script>
+<script src="imprimir.js"></script>
 <script src="ninja-preguntas.js"></script>
 <script>
 const $=id=>document.getElementById(id);
